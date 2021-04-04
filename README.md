@@ -20,8 +20,8 @@ To build a fraud detection classifier that, given a new transaction, can tell us
 
 # EXPECTED RESULTS:
 
-•	A model that can classify transactions as normal or fraudulent in real time\n
-•	A model with an accuracy score of at least 80%\n
-•	The model is to be deployed using a REST API
+1)	A model that can classify transactions as normal or fraudulent in real time
+2)	A model with an accuracy score of at least 80%
+3)	The model is to be deployed using a REST API
 
 
