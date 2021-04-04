@@ -15,8 +15,8 @@ Both the card issuer and the merchant are liable in the event of fraud, most of 
 
 To build a fraud detection classifier that, given a new transaction, can tell us if it is fraudulent or not with a correspondent confidence level. # Which are our classes? : 
 
-“0” label = transaction is NOT fraudulent
-“1” label (transaction IS fraudulent)
+1) “0” label = transaction is NOT fraudulent
+2) “1” label (transaction IS fraudulent)
 
 # EXPECTED RESULTS:
 
