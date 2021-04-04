@@ -1,8 +1,8 @@
 # Real-Time-Credit-Card-Transaction-Fraud-Detection
 
-Predicting Credit Card Fraud using Random Forest ML in near real-time
+Detecting Credit Card Fraud using ensemble methods in near real-time
 
-# Credit Card Fraud Detection using traditional Machine Learning Techniques (Random Forest with Python Scikit-Learn)
+# Credit Card Fraud Detection using ensemble methods in Zimbabwe
 
 
 # The Problem:
