@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{{url_for('static',filename = 'img//icon/C.png')}}" type="image/png ">
+    <title>Charge</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/themify-icons.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/fontawesome/css/all.min.css ')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/owl-carousel/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/animate-css/animate.css')}}">
+    <!-- main css -->
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/styles.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/responsive.css')}}">
+    <!-- Chart css -->
+    <link rel = "stylesheet" href =" {{url_for('static', filename = 'Chartjs/Chart.min.css')}}">
+    <!-- Chart js -->
+    <script src='{{url_for("static",filename ="Chartjs/Chart.min.js")}}'></script>
+
+</head>
+<body>
+{% include 'layout/header2.html' %}
+
+{% block body %}
+
+{% endblock %}
+
+    <!-- ================ start footer Area ================= -->
+    <footer class="footer-area" style= "padding-bottom: 2px; padding-top: 5px;">
+
+        <div class="footer-bottom row align-items-center text-center text-lg-left no-gutters">
+            <p class="footer-text m-0 col-lg-8 col-md-12">
+                Powered by <a href="#">NChiza</a> <br>Copyright &copy;<script>document.write(new Date().getFullYear());</script></p>
+            <div class="col-lg-4 col-md-12 text-center text-lg-right footer-social">
+                <a href="#"><i class="ti-facebook"></i></a>
+                <a href="#"><i class="ti-twitter-alt"></i></a>
+                <a href="#"><i class="ti-dribbble"></i></a>
+                <a href="#"><i class="ti-linkedin"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- ================ End footer Area ================= -->
+
+
+
+
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{{url_for('static',filename ='js/jquery-2.2.4.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/popper.js')}}"></script>
+<script src="{{url_for('static',filename ='js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename ='vendors/owl-carousel/owl.carousel.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.ajaxchimp.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/waypoints.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/mail-script.js')}}"></script>
+<script src="{{url_for('static',filename ='js/contact.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.form.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.validate.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/mail-script.js')}}"></script>
+<script src="{{url_for('static',filename ='js/theme.js')}}"></script>
+</body>
+</html>

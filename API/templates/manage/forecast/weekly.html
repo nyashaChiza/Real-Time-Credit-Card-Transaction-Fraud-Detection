@@ -1,0 +1,58 @@
+{% extends 'layout/layout2.html' %}
+{% block body %}
+
+  <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Monitor</h2>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Monitor</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+
+    <!--================ Start Monitor Area =================-->
+    <section class=" area-padding">
+
+ <div class="btn-group mr-2 float-right" style="padding-right:40px;">
+     <a href="{{ url_for('monitor_daily') }}"><button class="btn btn-sm  btn-outline-secondary">Daily</button></a>
+     <a href="{{ url_for('monitor_weekly') }}"> <button class="btn btn-sm bg-dark btn-outline-secondary">Weekly</button></a>
+     <a href="{{ url_for('monitor_monthly') }}"> <button class="btn btn-sm btn-outline-secondary">Monthly</button></a>
+              </div>
+
+    </div>
+         <div class="mx-auto" style="width: 95%; height: 450px;" >
+            <canvas id="canvas"></canvas>
+        </div>
+
+     <script>
+new Chart(document.getElementById("canvas"), {
+  type: 'line',
+  data: {
+    labels: ['Mon','Tue','Wed','Thur','Fri','Sat','Sun'],
+    datasets: [{
+        data: {{data}} ,
+        label: "Forecast",
+        borderColor: "#3e95cd",
+
+      },
+    ]
+  },
+  options: {
+      maintainAspectRatio: false,
+    title: {
+      display: true,
+      text: 'Electricity Consumption (in KiloWatts)'
+    }
+  }
+});
+	</script>
+          </section>
+    <!--================Monitor Area End =================-->
+
+
+{% endblock %}

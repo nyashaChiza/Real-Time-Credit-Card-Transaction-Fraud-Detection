@@ -1,0 +1,150 @@
+{% extends 'layout/layout2.html' %}
+{% block body %}
+
+  <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Monitor</h2>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Analytics</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+
+    <!--================ Start Monitor Area =================-->
+    <section class=" area-padding bg-light">
+      <div class="row mx-auto">
+        
+      <div class="col-md-6">
+        <div class="card ">
+            <div class="card-header bg-dark text-white ">
+                <h4 class="card-title">Transaction Classification</h4>
+                <p class="card-category">Fraudulent Vs Normal</p>
+              
+            </div>
+            <div class="card-body ">
+              
+    </div>
+         <div class="mx-auto " style="width: 85%; height: 350px;" >
+            <canvas id="canvas"></canvas>
+        </div>
+            </div>
+            
+        </div>
+
+        <div class="col-md-5 pull-right">
+          <div class="card ">
+              <div class="card-header bg-dark text-white ">
+                  <h4 class="card-title">Model Accuracy</h4>
+                  <p class="card-category">Random Forest Model</p>
+              </div>
+              <div class="card-body ">
+                
+      </div>
+           <div class="mx-auto " style="width: 85%; height: 350px;" >
+              <canvas id="canvas2"></canvas>
+          </div>
+              </div>
+              
+          </div>
+        </div>
+          </br>
+          <div class="row mx-auto">
+            <div class="col-md-12">
+              <div class="card ">
+                  <div class="card-header bg-dark text-white ">
+                      <h4 class="card-title">Transaction Distrubution</h4>
+                      <p class="card-category">Amount Vs Location</p>
+                  </div>
+                  <div class="card-body ">
+                    
+          </div>
+               <div class="mx-auto " style="width: 85%; height: 350px;" >
+                  <canvas id="canvas1"></canvas>
+              </div>
+                  </div>
+                  
+              </div>
+            
+          </div>
+          
+        </div>
+        
+    </div>
+
+
+     <script>
+new Chart(document.getElementById("canvas"), {
+  type: 'line',
+  data: {
+    labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
+    datasets: [{
+        data: {{data}} ,
+        label: "Forecast",
+        borderColor: "#3e95cd",
+
+      },
+    ]
+  },
+  options: {
+      maintainAspectRatio: false,
+    title: {
+      display: true,
+      text: 'Electricity Consumption (in KiloWatts)'
+    }
+  }
+});
+	</script>
+     <script>
+      new Chart(document.getElementById("canvas1"), {
+        type: 'line',
+        data: {
+          labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
+          datasets: [{
+              data: {{data}} ,
+              label: "Forecast",
+              borderColor: "#3e95cd",
+      
+            },
+          ]
+        },
+        options: {
+            maintainAspectRatio: false,
+          title: {
+            display: true,
+            text: 'Electricity Consumption (in KiloWatts)'
+          }
+        }
+      }); 
+    </script>
+         <script>
+          new Chart(document.getElementById("canvas2"), {
+            type: 'line',
+            data: {
+              labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
+              datasets: [{
+                  data: {{data}} ,
+                  label: "Forecast",
+                  borderColor: "#3e95cd",
+          
+                },
+              ]
+            },
+            options: {
+                maintainAspectRatio: false,
+              title: {
+                display: true,
+                text: 'Electricity Consumption (in KiloWatts)'
+              }
+            }
+          }); 
+        </script>
+</section>
+    <!--================Monitor Area End =================-->
+
+
+{% endblock %}

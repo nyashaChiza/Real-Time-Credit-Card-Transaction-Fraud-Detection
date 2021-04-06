@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    
+    <title>
+    
+        Designing a RESTful API using Flask-RESTful - miguelgrinberg.com
+    
+</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+	<meta name="description" content="miguelgrinberg.com">
+	<meta name="copyright" content="Copyright (c) 2012-2015 Miguel Grinberg">
+	<meta name="author" content="Miguel Grinberg">
+    
+    <meta name="keywords" content="python, programming, REST, RESTful, API, web, service, saas">
+    
+
+    
+    <!-- Bootstrap -->
+    <link href="./Designing a RESTful API using Flask-RESTful_files/bootstrap.min.css" rel="stylesheet">
+    <link href="./Designing a RESTful API using Flask-RESTful_files/prettify.css" type="text/css" rel="stylesheet">
+    <link href="./Designing a RESTful API using Flask-RESTful_files/colorbox.css" rel="stylesheet" type="text/css">
+    <link href="./Designing a RESTful API using Flask-RESTful_files/style_20200907.css" rel="stylesheet" type="text/css">
+
+    <link rel="shortcut icon" href="https://blog.miguelgrinberg.com/static/favicon.ico">
+	<link rel="alternate" type="application/rss+xml" href="https://blog.miguelgrinberg.com/feed" title="miguelgrinberg.com RSS feed">
+
+    <meta property="og:title" content="Designing a RESTful API using Flask-RESTful">
+    <meta property="og:description" content="This is the third article in which I explore different aspects of writing RESTful APIs using the Flask microframework. Here is the first, and the second.The example RESTful server I wrote before used…">
+    <meta property="og:image" content="http://blog.miguelgrinberg.com/static/cards/designing-a-restful-api-using-flask-restful.jpg">
+    <meta property="og:url" content="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful">
+    <meta name="twitter:title" content="Designing a RESTful API using Flask-RESTful">
+    <meta name="twitter:description" content="This is the third article in which I explore different aspects of writing RESTful APIs using the Flask microframework. Here is the first, and the second.The example RESTful server I wrote before used…">
+    <meta name="twitter:image" content="http://blog.miguelgrinberg.com/static/cards/designing-a-restful-api-using-flask-restful.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@miguelgrinberg">
+
+  <style type="text/css">.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q{display:block!important;border:1px solid #cdcfd2!important;background-color:#fff!important;color:#373a3d!important;width:100vw!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-24GeGuJgk9LrMLp7qVvlyz{background:#6a7e89!important;color:#fff!important;padding:10px!important;font-size:18px!important;font-family:sans-serif!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-KVjdulkCFfUZps29EbgAC{background:#f3f6f8!important;border-bottom:1px solid #cdcfd2!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-KVjdulkCFfUZps29EbgAC>*{margin-right:10px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1OeZ2PQ98oAp6Vc5mMc6V5{list-style:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-vCwYmWF_l83ScZBrGnRoi,.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1OeZ2PQ98oAp6Vc5mMc6V5{margin:0!important;padding:0!important;width:100%!important;display:block!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-vCwYmWF_l83ScZBrGnRoi:not(:last-child){border-bottom:1px solid #cdcfd2!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1XQZkb-FlHWABUp4_uShaZ{color:inherit!important;cursor:pointer!important;width:100%!important;display:inline-block!important;margin:10px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1XTzMvb2XKitWz0mFLlyyp{margin:5px!important;display:block!important;width:auto!important;white-space:pre!important;overflow-x:scroll!important;background:inherit!important;color:inherit!important;font-family:monospace}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1XTzMvb2XKitWz0mFLlyyp:not(.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-39QUvFFn5B7GMcqMQkOXZ3){display:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-295DY3nO0DbJWMsOqmjCli{background:#f5f5f5!important;color:#5a5a5a!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1aQZwu6CUzAf2zUcI7tg0Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-295DY3nO0DbJWMsOqmjCli{display:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-38EPFyKXMtoP12rPlmrHxs{background:#e6f7ff!important;color:#006097!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3W4ZnQjhoGfT1gTNcqRXdi .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-38EPFyKXMtoP12rPlmrHxs{display:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-HGYnfzlmgOZ-l7eANhQe_{background:#fff3ea!important;color:#993a00!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-24e52A11B1UIErbKHtBmqc .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-HGYnfzlmgOZ-l7eANhQe_{display:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-jji74ZzulHScD0OAD_G7h{background:#fef2f1!important;color:#b10823!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3npS60y-EvfF7G_lioSx2Q.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-28jAOA7cDee-95LvwGsOP- .IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-jji74ZzulHScD0OAD_G7h{display:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu{background-color:#0073b1!important;border:0!important;border-radius:2px!important;box-sizing:border-box!important;color:#fff!important;cursor:pointer!important;display:inline-block!important;font-family:-apple-system,system-ui,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Fira Sans,Ubuntu,Oxygen,Oxygen Sans,Cantarell,Droid Sans,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Lucida Grande,Helvetica,Arial,sans-serif!important;font-weight:600!important;overflow:hidden!important;outline-width:2px!important;position:relative!important;text-align:center!important;text-decoration:none!important;vertical-align:middle!important;white-space:nowrap!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu:disabled{cursor:not-allowed!important;opacity:.7!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu:not(:disabled):not(.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1zhzkayakwEXovVYUbq5Gy):hover{background-color:#006097!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu:not(:disabled):not(.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1zhzkayakwEXovVYUbq5Gy):active{background-color:#004b7c!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1zhzkayakwEXovVYUbq5Gy{background-color:#fff!important;color:#0073b1!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1zhzkayakwEXovVYUbq5Gy:not(:disabled):hover{color:#006097!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1zhzkayakwEXovVYUbq5Gy:not(:disabled):active{color:#004b7c!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu>xdoor-icon{display:inline-block!important;height:100%!important;vertical-align:top!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu>xdoor-icon>svg{pointer-events:none!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-7inSbaAsvG5bf7w6lJTEr{font-size:10px!important;height:16px!important;line-height:16px!important;padding:0 6px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-7inSbaAsvG5bf7w6lJTEr>xdoor-icon{margin-left:-6px!important;margin-right:3px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-7inSbaAsvG5bf7w6lJTEr>xdoor-icon>svg{height:16px!important;width:16px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-7inSbaAsvG5bf7w6lJTEr.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-2lrEjt4SOTxqrYsv1piG4c>xdoor-icon{margin-right:-6px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu,.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3uCBSbQNVNf2QjqHe1rfb6{font-size:11px!important;height:20px!important;line-height:20px!important;padding:0 7px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3uCBSbQNVNf2QjqHe1rfb6>xdoor-icon,.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu>xdoor-icon{margin-left:-7px!important;margin-right:3.5px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3uCBSbQNVNf2QjqHe1rfb6>xdoor-icon>svg,.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu>xdoor-icon>svg{height:20px!important;width:20px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-3uCBSbQNVNf2QjqHe1rfb6.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-2lrEjt4SOTxqrYsv1piG4c>xdoor-icon,.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-2lrEjt4SOTxqrYsv1piG4c>xdoor-icon{margin-right:-7px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-21Smv9YG-5V6M6KP-5v2WG{font-size:14px!important;height:24px!important;line-height:24px!important;padding:0 12px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-21Smv9YG-5V6M6KP-5v2WG>xdoor-icon{margin-left:-12px!important;margin-right:6px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-21Smv9YG-5V6M6KP-5v2WG>xdoor-icon>svg{height:24px!important;width:24px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-21Smv9YG-5V6M6KP-5v2WG.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-2lrEjt4SOTxqrYsv1piG4c>xdoor-icon{margin-right:-12px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1TGdQUTLZdNG4R87OfAB-q{font-size:16px!important;height:32px!important;line-height:32px!important;padding:0 16px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1TGdQUTLZdNG4R87OfAB-q>xdoor-icon{margin-left:-16px!important;margin-right:8px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1TGdQUTLZdNG4R87OfAB-q>xdoor-icon>svg{height:32px!important;width:32px!important}.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1TGdQUTLZdNG4R87OfAB-q.IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-2lrEjt4SOTxqrYsv1piG4c>xdoor-icon{margin-right:-16px!important}</style><script charset="utf-8" src="./Designing a RESTful API using Flask-RESTful_files/button.63c51c903061d0dbd843c41e8a00aa5a.js.download"></script><style type="text/css" data-fbcssmodules="css:fb.css.basecss:fb.css.dialog css:fb.css.iframewidget">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_dialog_advanced{border-radius:8px;padding:10px}.fb_dialog_content{background:#fff;color:#373737}.fb_dialog_close_icon{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{left:5px;right:auto;top:5px}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{height:100%;left:0;margin:0;overflow:visible;position:absolute;top:-10000px;transform:none;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{background:none;height:auto;min-height:initial;min-width:initial;width:auto}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{clear:both;color:#fff;display:block;font-size:18px;padding-top:20px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .4);bottom:0;left:0;min-height:100%;position:absolute;right:0;top:0;width:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_mobile .fb_dialog_iframe{position:sticky;top:0}.fb_dialog_content .dialog_header{background:linear-gradient(from(#738aba), to(#2c4987));border-bottom:1px solid;border-color:#043b87;box-shadow:white 0 1px 1px -1px inset;color:#fff;font:bold 14px Helvetica, sans-serif;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:linear-gradient(from(#4267B2), to(#2a4887));background-clip:padding-box;border:1px solid #29487d;border-radius:3px;display:inline-block;line-height:18px;margin-top:3px;max-width:85px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{background:none;border:none;color:#fff;font:bold 12px Helvetica, sans-serif;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #4a4a4a;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f5f6f7;border:1px solid #4a4a4a;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://z-p3-static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-position:50% 50%;background-repeat:no-repeat;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}</style></head>
+  <body>
+    
+    <!-- facebook sdk -->
+    <div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; width: 0px; height: 0px;"><div></div></div></div>
+    <script src="./Designing a RESTful API using Flask-RESTful_files/all.js.download" async="" crossorigin="anonymous"></script><script type="text/javascript" async="" src="./Designing a RESTful API using Flask-RESTful_files/recaptcha__en.js.download" crossorigin="anonymous" integrity="sha384-EauiKN7dy30bq/wDo7lcvebLQr7wwQPtEV6A1G43RAWnhPwxWZFCCTOT/hE+ffe3"></script><script src="./Designing a RESTful API using Flask-RESTful_files/cb=gapi.loaded_1" async=""></script><script src="./Designing a RESTful API using Flask-RESTful_files/cb=gapi(1).loaded_0" async=""></script><script type="text/javascript" async="" src="./Designing a RESTful API using Flask-RESTful_files/ga.js.download"></script><script id="twitter-wjs" src="./Designing a RESTful API using Flask-RESTful_files/widgets.js.download"></script><script id="facebook-jssdk" src="./Designing a RESTful API using Flask-RESTful_files/all.js(1).download"></script><script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <!-- google plus sdk -->
+    <script src="./Designing a RESTful API using Flask-RESTful_files/platform.js.download" async="" defer="" gapi_processed="true"></script>
+    <!-- twitter sdk -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    <!-- linkedin sdk -->
+    <script src="./Designing a RESTful API using Flask-RESTful_files/in.js.download" type="text/javascript" defer=""></script>
+
+    
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="https://blog.miguelgrinberg.com/index">miguelgrinberg.com</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="https://blog.miguelgrinberg.com/index">Home</a></li>
+                        <li><a href="https://courses.miguelgrinberg.com/">My Courses</a></li>
+                        <li><a href="https://blog.miguelgrinberg.com/post/about-me">About Me</a></li>
+                        
+                        <li><a style="top: -1px;" href="https://blog.miguelgrinberg.com/post/hire-me"><span style="letter-spacing: 1px; font-size: 110%;">Hire me!</span></a></li>
+                        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <p class="navbar-text" style="margin-top: 10px; margin-bottom: 0px;">
+                                <a type="application/rss+xml" href="https://blog.miguelgrinberg.com/feed"><img src="./Designing a RESTful API using Flask-RESTful_files/rss.png" alt="RSS Feed" title="RSS Feed"></a>
+                                <a href="https://www.facebook.com/miguelgrinbergblog"><img src="./Designing a RESTful API using Flask-RESTful_files/facebook.png" alt="Facebook" title="Facebook"></a>
+                                <a href="https://youtube.com/miguelgrinberg"><img src="./Designing a RESTful API using Flask-RESTful_files/youtube.png" alt="YouTube" title="YouTube"></a>
+                                <a href="http://www.linkedin.com/in/miguelgrinberg"><img src="./Designing a RESTful API using Flask-RESTful_files/linkedin.png" alt="LinkedIn" title="LinkedIn"></a>
+                                <a href="http://github.com/miguelgrinberg"><img src="./Designing a RESTful API using Flask-RESTful_files/github.png" alt="GitHub" title="GitHub"></a>
+                                <a href="https://twitter.com/miguelgrinberg"><img src="./Designing a RESTful API using Flask-RESTful_files/twitter.png" alt="Twitter" title="Twitter"></a>
+                                <a href="https://patreon.com/miguelgrinberg"><img src="./Designing a RESTful API using Flask-RESTful_files/patreon.png" alt="Patreon" title="Patreon"></a>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </nav>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="main">
+                    
+                    
+                    
+                    
+                    
+
+<div class="post">
+
+<p class="date"><span class="" data-timestamp="2013-07-28T19:11:38Z" data-format="format(&#39;LL&#39;)" data-refresh="0">July 28 2013</span></p>
+<h1 class="post-title"><a href="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful">Designing a RESTful API using Flask-RESTful</a></h1>
+<div class="posted">Posted by <span class="label label-danger"><a href="https://blog.miguelgrinberg.com/author/Miguel%20Grinberg">Miguel Grinberg</a></span> under <span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Python">Python</a></span>, <span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Programming">Programming</a></span>, <span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/REST">REST</a></span>, <span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Flask">Flask</a></span>. </div>
+<div class="social-bar">
+    <table>
+        <tbody><tr>
+            <td><div class="social-box" style="padding-top: 8px;"><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" style="position: static; visibility: visible; width: 60px; height: 20px;" title="Twitter Tweet Button" src="./Designing a RESTful API using Flask-RESTful_files/tweet_button.96fd96193cc66c3e11d4c5e4c7c7ec97.en.html" data-url="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful"></iframe></div></td>
+            <td><div class="social-box" style="padding-left: 6px;"><div class="fb-like fb_iframe_widget" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful" data-send="false" data-layout="button" data-width="450" data-show-faces="false" data-font="verdana" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;font=verdana&amp;href=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fdesigning-a-restful-api-using-flask-restful&amp;layout=button&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=450"><span style="vertical-align: bottom; width: 60px; height: 20px;"><iframe name="f2bacec8f128c28" width="450px" height="1000px" data-testid="fb:like Facebook Social Plugin" title="fb:like Facebook Social Plugin" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" src="./Designing a RESTful API using Flask-RESTful_files/like.html" style="border: none; visibility: visible; width: 60px; height: 20px;" class=""></iframe></span></div></div></td>
+            <td><div class="social-box" style="padding-top: 8px;"><div id="___plusone_0" style="position: absolute; width: 450px; left: -10000px;"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position:absolute;top:-10000px;width:450px;margin:0px;border-style:none" tabindex="0" vspace="0" width="100%" id="I0_1609181193395" name="I0_1609181193395" src="./Designing a RESTful API using Flask-RESTful_files/fastbutton.html" data-gapiattached="true"></iframe></div><div class="g-plusone" data-size="medium" data-annotation="none" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful" data-gapiscan="true" data-onload="true" data-gapistub="true"></div></div></td>
+            <td><div class="social-box" style="padding-top: 8px;"><span class="IN-widget" data-lnkd-debug="&lt;script type=&quot;IN/Share+init&quot; data-url=&quot;http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful&quot;&gt;&lt;/script&gt;" style="display: inline-block; line-height: 1; vertical-align: bottom; padding: 0px; margin: 0px; text-indent: 0px; text-align: center;"><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: bottom !important; font-size: 1px !important;"><button class="IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu"><xdoor-icon aria-hidden="true"><svg viewBox="0 0 24 24" width="24px" height="24px" x="0" y="0" preserveAspectRatio="xMinYMin meet">
+      <g style="fill: currentColor">
+        <rect x="-0.003" style="fill:none;" width="24" height="24"></rect>
+        <path style="" d="M20,2h-16c-1.1,0-2,0.9-2,2v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2zM8,19h-3v-9h3V19zM6.5,8.8C5.5,8.8,4.7,8,4.7,7s0.8-1.8,1.8-1.8S8.3,6,8.3,7S7.5,8.8,6.5,8.8zM19,19h-3v-4c0-1.4-0.6-2-1.5-2c-1.1,0-1.5,0.8-1.5,2.2V19h-3v-9h2.9v1.1c0.5-0.7,1.4-1.3,2.6-1.3c2.3,0,3.5,1.1,3.5,3.7V19z"></path>
+      </g>
+    </svg></xdoor-icon>Share</button></span></span></div></td>
+        </tr>
+    </tbody></table>
+</div>
+<div class="post_body"><p>This is the third article in which I explore different aspects of writing RESTful APIs using the <a href="http://flask.pocoo.org/">Flask</a> microframework. Here is the <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask">first</a>, and the <a href="http://blog.miguelgrinberg.com/post/writing-a-javascript-rest-client">second</a>.</p>
+<p>The example RESTful server I wrote before used only Flask as a dependency. Today I will show you how to write the same server using <a href="http://flask-restful.readthedocs.org/en/latest/">Flask-RESTful</a>, a Flask extension that simplifies the creation of APIs.</p>
+<h2>The RESTful server</h2>
+<p>As a reminder, here is the definition of the ToDo List web service that has been serving as an example in my RESTful articles:</p>
+<table class="data">
+<tbody><tr><th>HTTP Method</th><th>URI</th><th>Action</th></tr>
+<tr><td>GET</td><td>http://[hostname]/todo/api/v1.0/tasks</td><td>Retrieve list of tasks</td></tr>
+<tr><td>GET</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Retrieve a task</td></tr>
+<tr><td>POST</td><td>http://[hostname]/todo/api/v1.0/tasks</td><td>Create a new task</td></tr>
+<tr><td>PUT</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Update an existing task</td></tr>
+<tr><td>DELETE</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Delete a task</td></tr>
+</tbody></table>
+
+<p>The only resource exposed by this service is a "task", which has the following data fields:</p>
+<ul>
+<li><strong>uri</strong>: unique URI for the task. String type.</li>
+<li><strong>title</strong>: short task description. String type.</li>
+<li><strong>description</strong>: long task description. Text type.</li>
+<li><strong>done</strong>: task completion state. Boolean type.</li>
+</ul>
+<h2>Routing</h2>
+<p>In my first RESTful server example (source code <a href="https://github.com/miguelgrinberg/REST-tutorial/blob/master/rest-server.py">here</a>) I have used regular Flask view functions to define all the routes.</p>
+<p>Flask-RESTful provides a <code>Resource</code> base class that can define the routing for one or more HTTP methods for a given URL. For example, to define a <code>User</code> resource with <code>GET</code>, <code>PUT</code> and <code>DELETE</code> methods you would write:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">Flask</span><span class="pln">
+</span><span class="kwd">from</span><span class="pln"> flask_restful </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">Api</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Resource</span><span class="pln">
+
+app </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Flask</span><span class="pun">(</span><span class="pln">__name__</span><span class="pun">)</span><span class="pln">
+api </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Api</span><span class="pun">(</span><span class="pln">app</span><span class="pun">)</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">UserAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">def</span><span class="pln"> </span><span class="kwd">get</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> put</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> </span><span class="kwd">delete</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+api</span><span class="pun">.</span><span class="pln">add_resource</span><span class="pun">(</span><span class="typ">UserAPI</span><span class="pun">,</span><span class="pln"> </span><span class="str">'/users/&lt;int:id&gt;'</span><span class="pun">,</span><span class="pln"> endpoint </span><span class="pun">=</span><span class="pln"> </span><span class="str">'user'</span><span class="pun">)</span></code></pre>
+<p>The <code>add_resource</code> function registers the routes with the framework using the given endpoint. If an endpoint isn't given then Flask-RESTful generates one for you from the class name, but since sometimes the endpoint is needed for functions such as <code>url_for</code> I prefer to make it explicit.</p>
+<p>My ToDo API defines two URLs: <code>/todo/api/v1.0/tasks</code> for the list of tasks, and <code>/todo/api/v1.0/tasks/&lt;int:id&gt;</code> for an individual task. Since Flask-RESTful's <code>Resource</code> class can wrap a single URL this server will need two resources:</p>
+<pre class="prettyprint"><code><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskListAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">def</span><span class="pln"> </span><span class="kwd">get</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> post</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">def</span><span class="pln"> </span><span class="kwd">get</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> put</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> </span><span class="kwd">delete</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">pass</span><span class="pln">
+
+api</span><span class="pun">.</span><span class="pln">add_resource</span><span class="pun">(</span><span class="typ">TaskListAPI</span><span class="pun">,</span><span class="pln"> </span><span class="str">'/todo/api/v1.0/tasks'</span><span class="pun">,</span><span class="pln"> endpoint </span><span class="pun">=</span><span class="pln"> </span><span class="str">'tasks'</span><span class="pun">)</span><span class="pln">
+api</span><span class="pun">.</span><span class="pln">add_resource</span><span class="pun">(</span><span class="typ">TaskAPI</span><span class="pun">,</span><span class="pln"> </span><span class="str">'/todo/api/v1.0/tasks/&lt;int:id&gt;'</span><span class="pun">,</span><span class="pln"> endpoint </span><span class="pun">=</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">)</span></code></pre>
+<p>Note that while the method views of <code>TaskListAPI</code> receive no arguments the ones in <code>TaskAPI</code> all receive the <code>id</code>, as specified in the URL under which the resource is registered.</p>
+<h2>Request Parsing and Validation</h2>
+<p>When I implemented this server in the previous article I did my own validation of the request data. For example, look at how long the <code>PUT</code> handler is in that version:</p>
+<pre class="prettyprint"><code><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks/&lt;int:task_id&gt;'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'PUT'</span><span class="pun">])</span><span class="pln">
+</span><span class="lit">@auth</span><span class="pun">.</span><span class="pln">login_required
+</span><span class="kwd">def</span><span class="pln"> update_task</span><span class="pun">(</span><span class="pln">task_id</span><span class="pun">):</span><span class="pln">
+    task </span><span class="pun">=</span><span class="pln"> filter</span><span class="pun">(</span><span class="kwd">lambda</span><span class="pln"> t</span><span class="pun">:</span><span class="pln"> t</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> task_id</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> len</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'title'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'title'</span><span class="pun">])</span><span class="pln"> </span><span class="pun">!=</span><span class="pln"> unicode</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'description'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'description'</span><span class="pun">])</span><span class="pln"> </span><span class="kwd">is</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> unicode</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'done'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'done'</span><span class="pun">])</span><span class="pln"> </span><span class="kwd">is</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> </span><span class="kwd">bool</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'title'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'title'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'title'</span><span class="pun">])</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'description'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'description'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'description'</span><span class="pun">])</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'done'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'done'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'done'</span><span class="pun">])</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">])</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>Here I have to make sure the data given with the request is valid before using it, and that makes the function pretty long.</p>
+<p>Flask-RESTful provides a much better way to handle this with the <code>RequestParser</code> class. This class works in a similar way as <code>argparse</code> for command line arguments.</p>
+<p>First, for each resource I define the arguments and how to validate them:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask_restful </span><span class="kwd">import</span><span class="pln"> reqparse
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskListAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">def</span><span class="pln"> __init__</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse </span><span class="pun">=</span><span class="pln"> reqparse</span><span class="pun">.</span><span class="typ">RequestParser</span><span class="pun">()</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">add_argument</span><span class="pun">(</span><span class="str">'title'</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> str</span><span class="pun">,</span><span class="pln"> required </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">True</span><span class="pun">,</span><span class="pln">
+            help </span><span class="pun">=</span><span class="pln"> </span><span class="str">'No task title provided'</span><span class="pun">,</span><span class="pln"> location </span><span class="pun">=</span><span class="pln"> </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">add_argument</span><span class="pun">(</span><span class="str">'description'</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> str</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">default</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln"> location </span><span class="pun">=</span><span class="pln"> </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">super</span><span class="pun">(</span><span class="typ">TaskListAPI</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">self</span><span class="pun">).</span><span class="pln">__init__</span><span class="pun">()</span><span class="pln">
+
+    </span><span class="com"># ...</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">def</span><span class="pln"> __init__</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">):</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse </span><span class="pun">=</span><span class="pln"> reqparse</span><span class="pun">.</span><span class="typ">RequestParser</span><span class="pun">()</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">add_argument</span><span class="pun">(</span><span class="str">'title'</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> str</span><span class="pun">,</span><span class="pln"> location </span><span class="pun">=</span><span class="pln"> </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">add_argument</span><span class="pun">(</span><span class="str">'description'</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> str</span><span class="pun">,</span><span class="pln"> location </span><span class="pun">=</span><span class="pln"> </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">add_argument</span><span class="pun">(</span><span class="str">'done'</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">bool</span><span class="pun">,</span><span class="pln"> location </span><span class="pun">=</span><span class="pln"> </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">super</span><span class="pun">(</span><span class="typ">TaskAPI</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">self</span><span class="pun">).</span><span class="pln">__init__</span><span class="pun">()</span><span class="pln">
+
+    </span><span class="com"># ...</span></code></pre>
+<p>In the <code>TaskListAPI</code> resource the <code>POST</code> method is the only one the receives arguments. The <code>title</code> argument is required here, so I included an error message that Flask-RESTful will send as a response to the client when the field is missing. The <code>description</code> field is optional, and when it is missing a default value of an empty string will be used. One interesting aspect of the <code>RequestParser</code> class is that by default it looks for fields in <code>request.values</code>, so the <code>location</code> optional argument must be set to indicate that the fields are coming in <code>request.json</code>.</p>
+<p>The request parser for the <code>TaskAPI</code> is constructed in a similar way, but has a few differences. In this case it is the <code>PUT</code> method that will need to parse arguments, and for this method all the arguments are optional, including the <code>done</code> field that was not part of the request in the other resource.</p>
+<p>Now that the request parsers are initialized, parsing and validating a request is pretty easy. For example, note how much simpler the <code>TaskAPI.put()</code> method becomes:</p>
+<pre class="prettyprint"><code><span class="pln">    </span><span class="kwd">def</span><span class="pln"> put</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        task </span><span class="pun">=</span><span class="pln"> filter</span><span class="pun">(</span><span class="kwd">lambda</span><span class="pln"> t</span><span class="pun">:</span><span class="pln"> t</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> id</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> len</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">:</span><span class="pln">
+            abort</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+        task </span><span class="pun">=</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">]</span><span class="pln">
+        args </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">self</span><span class="pun">.</span><span class="pln">reqparse</span><span class="pun">.</span><span class="pln">parse_args</span><span class="pun">()</span><span class="pln">
+        </span><span class="kwd">for</span><span class="pln"> k</span><span class="pun">,</span><span class="pln"> v </span><span class="kwd">in</span><span class="pln"> args</span><span class="pun">.</span><span class="pln">iteritems</span><span class="pun">():</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> v </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">None</span><span class="pun">:</span><span class="pln">
+                task</span><span class="pun">[</span><span class="pln">k</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> v
+        </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>A side benefit of letting Flask-RESTful do the validation is that now there is no need to have a handler for the bad request code 400 error, this is all taken care of by the extension.</p>
+<h2>Generating Responses</h2>
+<p>My original REST server generates the responses using Flask's <code>jsonify</code> helper function. Flask-RESTful automatically handles the conversion to JSON, so instead of this:</p>
+<pre class="prettyprint"><code><span class="pln">        </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>I can do this:</p>
+<pre class="prettyprint"><code><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">}</span></code></pre>
+<p>Flask-RESTful also supports passing a custom status code back when necessary:</p>
+<pre class="prettyprint"><code><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">},</span><span class="pln"> </span><span class="lit">201</span></code></pre>
+<p>But there is more. The <code>make_public_task</code> wrapper from the original server converted a task from its internal representation to the external representation that clients expected. The conversion included removing the <code>id</code> field and adding a <code>uri</code> field in its place. Flask-RESTful provides a helper function to do this in a much more elegant way that not only generates the <code>uri</code> but also does type conversion on the remaining fields:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask_restful </span><span class="kwd">import</span><span class="pln"> fields</span><span class="pun">,</span><span class="pln"> marshal
+
+task_fields </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="str">'title'</span><span class="pun">:</span><span class="pln"> fields</span><span class="pun">.</span><span class="typ">String</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'description'</span><span class="pun">:</span><span class="pln"> fields</span><span class="pun">.</span><span class="typ">String</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'done'</span><span class="pun">:</span><span class="pln"> fields</span><span class="pun">.</span><span class="typ">Boolean</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'uri'</span><span class="pun">:</span><span class="pln"> fields</span><span class="pun">.</span><span class="typ">Url</span><span class="pun">(</span><span class="str">'task'</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    </span><span class="com"># ...</span><span class="pln">
+
+    </span><span class="kwd">def</span><span class="pln"> put</span><span class="pun">(</span><span class="kwd">self</span><span class="pun">,</span><span class="pln"> id</span><span class="pun">):</span><span class="pln">
+        </span><span class="com"># ...</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> marshal</span><span class="pun">(</span><span class="pln">task</span><span class="pun">,</span><span class="pln"> task_fields</span><span class="pun">)</span><span class="pln"> </span><span class="pun">}</span></code></pre>
+<p>The <code>task_fields</code> structure serves as a template for the <code>marshal</code> function. The <code>fields.Url</code> type is a special type that generates a URL. The argument it takes is the endpoint (recall that I have used explicit endpoints when I registered the resources specifically so that I can refer to them when needed).</p>
+<h2>Authentication</h2>
+<p>The routes in the REST server are all protected with HTTP basic authentication. In the original server the protection was added using the decorator provided by the <a href="https://github.com/miguelgrinberg/flask-httpauth">Flask-HTTPAuth</a> extension.</p>
+<p>Since the <code>Resouce</code> class inherits from Flask's <code>MethodView</code>, it is possible to attach decorators to the methods by defining a <code>decorators</code> class variable:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask_httpauth </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">HTTPBasicAuth</span><span class="pln">
+</span><span class="com"># ...</span><span class="pln">
+auth </span><span class="pun">=</span><span class="pln"> </span><span class="typ">HTTPBasicAuth</span><span class="pun">()</span><span class="pln">
+</span><span class="com"># ...</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    decorators </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="pln">auth</span><span class="pun">.</span><span class="pln">login_required</span><span class="pun">]</span><span class="pln">
+    </span><span class="com"># ...</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">TaskAPI</span><span class="pun">(</span><span class="typ">Resource</span><span class="pun">):</span><span class="pln">
+    decorators </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="pln">auth</span><span class="pun">.</span><span class="pln">login_required</span><span class="pun">]</span><span class="pln">
+    </span><span class="com"># ...</span></code></pre>
+<h2>Conclusion</h2>
+<p>The complete server implementation based on Flask-RESTful is available in my <a href="https://github.com/miguelgrinberg/REST-tutorial">REST-tutorial</a> project on github. The file with the Flask-RESTful server is <a href="https://github.com/miguelgrinberg/REST-tutorial/blob/master/rest-server-v2.py">rest-server-v2.py</a>.</p>
+<p>You can also download the entire project including both server implementations and a javascript client to test it:</p>
+<p><a href="https://github.com/miguelgrinberg/REST-tutorial/archive/master.zip">Download REST-tutorial project</a>.</p>
+<p>Let me know if you have any questions in the comments below.</p>
+<p>Miguel</p></div>
+
+<div class="patreon_footer">
+    <p>Hello, and thank you for visiting my blog! If you enjoyed this article, please consider supporting my work on this blog on <a href="https://patreon.com/miguelgrinberg">Patreon</a>!</p>
+    <center><p><a href="https://patreon.com/miguelgrinberg" alt="Become a Patron!" title="Become a Patron!"><img src="./Designing a RESTful API using Flask-RESTful_files/patreon-button.png"></a></p></center>
+</div>
+
+<div class="social-bar">
+    <table>
+        <tbody><tr>
+            <td><div class="social-box" style="padding-top: 8px;"><iframe id="twitter-widget-1" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" style="position: static; visibility: visible; width: 60px; height: 20px;" title="Twitter Tweet Button" src="./Designing a RESTful API using Flask-RESTful_files/tweet_button.96fd96193cc66c3e11d4c5e4c7c7ec97.en(1).html" data-url="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful"></iframe></div></td>
+            <td><div class="social-box" style="padding-left: 6px;"><div class="fb-like fb_iframe_widget" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful" data-send="false" data-layout="button" data-width="450" data-show-faces="false" data-font="verdana" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;font=verdana&amp;href=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fdesigning-a-restful-api-using-flask-restful&amp;layout=button&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=450"><span style="vertical-align: bottom; width: 60px; height: 20px;"><iframe name="f1d94a9db2c2cdc" width="450px" height="1000px" data-testid="fb:like Facebook Social Plugin" title="fb:like Facebook Social Plugin" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" src="./Designing a RESTful API using Flask-RESTful_files/like(1).html" style="border: none; visibility: visible; width: 60px; height: 20px;" class=""></iframe></span></div></div></td>
+            <td><div class="social-box" style="padding-top: 8px;"><div id="___plusone_1" style="position: absolute; width: 450px; left: -10000px;"><iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position:absolute;top:-10000px;width:450px;margin:0px;border-style:none" tabindex="0" vspace="0" width="100%" id="I1_1609181193420" name="I1_1609181193420" src="./Designing a RESTful API using Flask-RESTful_files/fastbutton(1).html" data-gapiattached="true"></iframe></div><div class="g-plusone" data-size="medium" data-annotation="none" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful" data-gapiscan="true" data-onload="true" data-gapistub="true"></div></div></td>
+            <td><div class="social-box" style="padding-top: 8px;"><span class="IN-widget" data-lnkd-debug="&lt;script type=&quot;IN/Share+init&quot; data-url=&quot;http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful&quot;&gt;&lt;/script&gt;" style="display: inline-block; line-height: 1; vertical-align: bottom; padding: 0px; margin: 0px; text-indent: 0px; text-align: center;"><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: bottom !important; font-size: 1px !important;"><button class="IN-6d5494f8-69f0-4a9d-8c6b-3e3c3eb1b33b-1G9ISYhSF8XoOmdcl0yKDu"><xdoor-icon aria-hidden="true"><svg viewBox="0 0 24 24" width="24px" height="24px" x="0" y="0" preserveAspectRatio="xMinYMin meet">
+      <g style="fill: currentColor">
+        <rect x="-0.003" style="fill:none;" width="24" height="24"></rect>
+        <path style="" d="M20,2h-16c-1.1,0-2,0.9-2,2v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2zM8,19h-3v-9h3V19zM6.5,8.8C5.5,8.8,4.7,8,4.7,7s0.8-1.8,1.8-1.8S8.3,6,8.3,7S7.5,8.8,6.5,8.8zM19,19h-3v-4c0-1.4-0.6-2-1.5-2c-1.1,0-1.5,0.8-1.5,2.2V19h-3v-9h2.9v1.1c0.5-0.7,1.4-1.3,2.6-1.3c2.3,0,3.5,1.1,3.5,3.7V19z"></path>
+      </g>
+    </svg></xdoor-icon>Share</button></span></span></div></td>
+        </tr>
+    </tbody></table>
+</div>
+
+
+<h4 style="text-align: right"><a name="comments"></a>188 comments</h4>
+
+
+
+<div class="comment">
+    <ul>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/ab1e142a46861a6e6653ef30bcd9ea88.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#1</span> <span class="label label-primary">Kuan</span> said
+        
+        <span class="" data-timestamp="2013-07-29T01:38:04Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Great Tut! thumb up!</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/754b0e1ccaa341c50556c7f68cc71c48"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#2</span> <span class="label label-primary">rick</span> said
+        
+        <span class="" data-timestamp="2013-07-29T04:03:41Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Loved your previous article.  This looks exactly like what I was looking for - using classes instead of individual methods.  I really like your clean examples and explanations.  Thanks for your posts.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/1d4899925a4d64c33dcba2d76d7f20dc.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#3</span> <span class="label label-primary">Marco Massenzio</span> said
+        
+        <span class="" data-timestamp="2013-08-02T07:33:49Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Great post, thanks!
+Very timely too, as this is exactly what I needed for a project of mine.</p>
+<p>Very minor point: you may want to add links to the other two articles.
+Good luck with the book!</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/3bf9cdee52067928d3f9aa20b18a27b6.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#4</span> <span class="label label-primary">Daniel Donovan</span> said
+        
+        <span class="" data-timestamp="2013-08-03T18:56:00Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Loving your tutorial very much.  I would love to see how you would create RESTful api's from SQLAlchemy models.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/f4ff19e3914f98a5f85a6ac0fed9f122.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#5</span> <span class="label label-primary">Danny</span> said
+        
+        <span class="" data-timestamp="2013-08-06T20:50:39Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Your tutorials are some of the best I've ever read.  </p>
+<p>You are a champion.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/03de533c8cc2ef384bae16c738fc0145"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#6</span> <span class="label label-primary">Dan</span> said
+        
+        <span class="" data-timestamp="2013-08-11T06:58:56Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Miguel,</p>
+<p>Thanks for the great tutorial.  Having started with Flask based on one of your previous tutorials and then implementing Flask-Restful, it was great to see your examples and comments to compare notes...</p>
+<p>Cheers,</p>
+<p>Dan    </p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/f63aa35dce1abfa425f86deb6e6eb671.png"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#7</span> <span class="label label-primary">Akshay</span> said
+        
+        <span class="" data-timestamp="2013-08-26T06:54:29Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Great articles Miguel, not only for the insight into Flask but also designing a Rest API. Would be awesome if you could discuss multi tenant design in Flask. Can't wait for your book</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/f8488d3296e244a3cb832d5b7f859552"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#8</span> <span class="label label-primary">Tim</span> said
+        
+        <span class="" data-timestamp="2013-09-05T12:07:35Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Thanks for the example code. It was immensely helpful in getting going with flask_restful.</p>
+<p>I am not sure if the implementation has changed since you published this code but I would just like to point out something that tripped me up. The args object returned by parse_args() will have an entry for each argument. Any that were not passed in the PUT request have a value of None. Calling args.get() will give unexpected results as the default value will never be used.</p>
+<p>For example it seems that rather than doing:
+  task['title'] = args.get('title', task['title'])
+you need to do:
+  if args.title != None:
+      task['title'] = args.title</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#9</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-09-06T16:11:32Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Tim: not sure what's going on. Flask-RESTful defines this little class called Namespace, which inherits from dict. That is the type of the args. My approach uses the regular dict interface, yours uses the namespace syntax. Both should work the same.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/143615a20f580213f50d651cf5148d11"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#10</span> <span class="label label-primary">Chitrank Dixit</span> said
+        
+        <span class="" data-timestamp="2013-10-05T07:05:05Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Thank you Miguel , I have searched a lot about writing the Flask-RESTful API a quick review but what you explain is really awesome.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/0649fbd79df4a9abb776b5c06ae37592"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#11</span> <span class="label label-primary">Dave Barndt</span> said
+        
+        <span class="" data-timestamp="2013-10-16T03:36:06Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Miguel, thank you for the tutorial and the example.  Flask and the new RESTful extension are terrific to use, and your tutorial and example(s) help make it so.</p>
+<p>I just have a quick question.  Flask's url_for() function allows you to specify an "_external=True" keyword argument to provide the full URL to a resource.  Is there a way to pass something similar to Flask-RESTful's fields.Url() method so that when the field/URL value is marshaled and returned in a GET response, it will be a full URL?</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#12</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-16T16:27:14Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Dave: Hmm. I somehow missed this when I wrote the article. Sounds like these URLs should be always external, since they are returned back to the client. I'll log a bug with Flask-Restful.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#13</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-16T16:34:33Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Dave: I have sent Flask-Restful a pull request with this change. You can see what I changed here: <a href="https://github.com/twilio/flask-restful/pull/139" rel="nofollow">https://github.com/twilio/flask-restful/pull/139</a></p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/e02ec40a80767d380385c18fb26b3f76.png"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#14</span> <span class="label label-primary">ryzhiy</span> said
+        
+        <span class="" data-timestamp="2013-10-16T21:44:01Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Hi Miguel,
+Thanks for the best tutorials on Flask over the internet.
+I had a quick question on managing unicode character. My application need to handle cyrillic characters, thus instead of using "str" I specify "unicode" type for my literals.
+The issue is that my application instance one server works smoothly, but on another it fails permanently to handle properly the ajax data.
+When I send latin strings in the POST it rejects them populating the "help" error message.
+When I send non-latin strings, it receives parses the data, but fails to execute marshal scenario with an error MarshallingException: 'ascii' codec can't decode byte 0xd0 in position 0: ordinal not in range(128)</p>
+<p>Have you also met a similar issue before?</p>
+<p>Thanks in advance</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#15</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-17T04:25:42Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@ryzhiy: have you tried using utf-8? For this you have to set the charset in the Content-Type header.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/e02ec40a80767d380385c18fb26b3f76.png"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#16</span> <span class="label label-primary">ryzhiy</span> said
+        
+        <span class="" data-timestamp="2013-10-18T07:50:11Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Yyes, I did. But this didn't help. The server accepts normally cyrillic encoded symbols and mixed strings (Cyrillic+ Latin), but not strings composed solely of Latin characters.</p>
+<p>I assume that this is somehow related to the web server or python versions. On the server where this doesn't work there is a gevent WSGI server installed.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/ea496ad1627458ccfad06c94842b7624.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#17</span> <span class="label label-primary">Hooman</span> said
+        
+        <span class="" data-timestamp="2013-10-22T12:08:16Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Hi Miguel,</p>
+<p>I have a problem understanding how your authentication works here.</p>
+<p>@auth.get_password
+def get_password(username):
+    if username == 'miguel':
+        return 'python'
+    return None</p>
+<p>This seems to look for the given username and to return the password in clear format.  Now if the given password matches the returned clear password for that user, the user is authorized.</p>
+<p>$ curl -u miguel:python -i http://localhost:5000/todo/api/v1.0/tasks</p>
+<p>In my case I need to send the password in clear format to the service and hash it right there and compare it to the existing hashed password in database. If its equal, then the user is authenticated.  But I don't understand how your method, is supposed to do this. May you please kindly clarify the <code>return 'python'</code> part? Because I have no access to the clear passwords of the users.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#18</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-22T14:13:32Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Hooman: this is a very simple example that does not deal with password hashing. If your password are hashed in the database (and they should be!) the get_password() function will return the password hash. My Flask-HTTPAuth extension includes a hash_password decorator that you can use to declare your hashing function. Example:</p>
+<p>@auth.hash_password
+def hash_pw(password):
+    return md5(password).hexdigest()</p>
+<p>This will be applied to all passwords coming from users before the comparison.</p>
+<p>NOTE: in all these cases secure HTTP must be used, the password or the password hashes should never be sent on an unencrypted channel.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/0649fbd79df4a9abb776b5c06ae37592"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#19</span> <span class="label label-primary">Dave Barndt</span> said
+        
+        <span class="" data-timestamp="2013-10-22T19:48:11Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Hi Miguel,</p>
+<p>Thanks for a great tutorial - it's been VERY helpful..  I had a quick question.  I would like to be able to always specify full URLs when returning data.  I see it's possible to specify "_external=True" in calls to flask.ext.restful.Api.url_for(), but it's not clear to me how to do so for the URL returned from the flask.ext.restful.fields.Url() function...?</p>
+<p>Thanks again for a great tutorial and examples.</p>
+<p>Dave</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#20</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-22T21:13:54Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Dave: You are not the first that noticed that the URLs returned by Flask-Restful are not external. I have forked the project and fixed it, you can find my fork at <a href="https://github.com/miguelgrinberg/flask-restful" rel="nofollow">https://github.com/miguelgrinberg/flask-restful</a>. I have submitted a pull request to the project with the change.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/0649fbd79df4a9abb776b5c06ae37592"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#21</span> <span class="label label-primary">Dave Barndt</span> said
+        
+        <span class="" data-timestamp="2013-10-23T17:15:15Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Hi Miguel,</p>
+<p>My bad, actually - I wound up asking the same question twice.  I neglected to notice there was a second page of comments for the article and just thought my original question hadn't been posted, or answered!  Please accept my sincere apologies.  I grabbed the forked/fixed <a href="http://fields.py/" rel="nofollow">fields.py</a> module and it seems to work great.  Thank you again for a terrific tutorial and timely response, despite my lack of comment-page-navigation skills.  :^)</p>
+<p>Dave</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/0649fbd79df4a9abb776b5c06ae37592"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#22</span> <span class="label label-primary">Dave Barndt</span> said
+        
+        <span class="" data-timestamp="2013-10-25T15:09:45Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>Hi again Miguel,</p>
+<p>I'm having another problem that I can't make much headway on and I'm wondering if something might be going on within Flask.</p>
+<p>I'm using lighttpd/flup/Flask (Flask-RESTful) to serve a JSON-based RESTful API.  Overall, it's working great so far.  The API's Resource-based classes return objects from which Flask is creating JSON as expected, returning a "Content-Type: application/json" in the HTTP response header and the JSON string in the HTTP response body.</p>
+<p>What I'd like to do is compress the returned JSON if the client indicates it will accept it.  I have mod_compress enabled in lighttpd.conf, with the following directive to set the MIME types to compress:</p>
+<code>compress.filetype = ( "application/json", "text/json", "text/javascript",
+"application/x-javascript", "text/css", "text/html", "text/plain" )
+</code>
+<p>The client (browser-based) is always sending an "Accept-Type: gzip, ..." header.  When lighttpd returns "text/*" MIME types, it is setting the "Content-Encoding: gzip" header and compressing the data, and the client handles it fine.</p>
+<p>However, this is not working for the "application/json" MIME type, and I'm scratching my head.  Since this request/response path is going through Flask, I'm wondering:  Is Flask supposed to get involved in the compression process at all, or is everything supposed to be handled at the lighttpd level?  I'm guessing the latter, but any confirmation/light you can shed would be helpful.</p>
+<p>Thanks again!</p>
+<p>Dave</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#23</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-25T16:09:55Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Dave: I may be wrong, but I vaguely recall lighttpd's mod_compress only working for static content. I believe for dynamic (i.e. FastCGI) responses the compression needs to be generated by the framework, so you may need to add a gzip middleware to the wsgi app.</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/0649fbd79df4a9abb776b5c06ae37592"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#24</span> <span class="label label-primary">Dave Barndt</span> said
+        
+        <span class="" data-timestamp="2013-10-25T16:17:13Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>I think I've found an initial answer to my own question.  The lighttpd docs for mod_compress say lighttpd only compresses static files automatically, and even then only static files that are &gt;= 128 bytes and &lt; 128 MB.  So it will not compress dynamic API data on my behalf.</p>
+<p>OK. so having said that, are there any Flask utilities to compress the JSON data and set the appropriate headers from within my RESTful API app?  The HTTP response headers I would like to set would be:</p>
+<p>Vary: Accept-Encoding
+Content-Length: 
+Content-Encoding: gzip
+(...others?)</p></pre>
+    </div>
+</div>
+        </li>
+        
+        <li>
+          
+          
+          <div class="comment-thumbnail"><img src="./Designing a RESTful API using Flask-RESTful_files/729e26a2a2c7ff24a71958d4aa4e5f35.jpeg"></div>
+<div class="comment-body">
+    
+    <p>
+        
+        <span class="label label-default">#25</span> <span class="label label-danger">Miguel Grinberg</span> said
+        
+        <span class="" data-timestamp="2013-10-25T16:32:26Z" data-format="fromNow(0)" data-refresh="0">7 years ago</span>
+    </p>
+    <div style="overflow: auto;">
+        <pre><p>@Dave: flup has a gzip middleware. I never used it, but looks like it might be what you need.</p></pre>
+    </div>
+</div>
+        </li>
+        
+    </ul>
+</div>
+
+<div class="page">
+<ul class="pager">
+  <li class="previous disabled">
+    <a href="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful#">««</a>
+  </li>
+  <li class="previous disabled">
+    <a href="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful#">«</a>
+  </li>
+  <li class="next">
+    <a href="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful/page/0#comments">»»</a>
+  </li>
+  <li class="next">
+    <a href="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful/page/2#comments">»</a>
+  </li>
+</ul>
+</div>
+
+<h3><a name="commentform"></a>Leave a Comment</h3>
+
+
+
+
+
+
+<form action="https://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful#commentform" method="post" class="form" role="form">
+  <input id="url" name="url" type="hidden" value="">
+<input id="csrf_token" name="csrf_token" type="hidden" value="IjMyZTgxZGZjOTk5OTgzZjgxMzlkZDNmOTQ1OGQ2MGQyZGJiMGNmYjUi.Esu5hw.EhvXMoLEgKxwuMC-bFQ9qoYBXfk">
+  
+    
+
+
+
+
+
+
+<div class="form-group  required"><label class="control-label" for="name">Name</label>
+        
+          <input class="form-control" id="name" name="name" required="" type="text" value="">
+        
+  </div>
+
+
+    
+    
+
+
+
+
+
+
+<div class="form-group  required"><label class="control-label" for="email">Email</label>
+        
+          <input class="form-control" id="email" name="email" required="" type="text" value="">
+        
+  </div>
+
+
+    
+
+
+
+
+
+
+<div class="form-group  required"><label class="control-label" for="comment">Comment</label>
+        
+          <textarea class="form-control" id="comment" name="comment" required=""></textarea>
+        
+  </div>
+
+
+    
+
+
+
+
+<div class="form-group "><label class="control-label" for="captcha">Captcha</label>
+        
+          
+<script src="./Designing a RESTful API using Flask-RESTful_files/api.js.download" async="" defer=""></script>
+<div class="g-recaptcha" data-sitekey="6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S"><div style="width: 304px; height: 78px;"><div><iframe src="./Designing a RESTful API using Flask-RESTful_files/anchor.html" width="304" height="78" role="presentation" name="a-wuftgqcsnxg1" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div><iframe style="display: none;" src="./Designing a RESTful API using Flask-RESTful_files/saved_resource(1).html"></iframe></div>
+
+        
+  </div>
+
+
+    
+
+
+
+
+
+  
+
+  
+  
+
+
+    <input class="btn btn-default" id="submit" name="submit" type="submit" value="Submit">
+  
+
+
+
+
+    
+
+</form>
+
+
+</div>
+
+                </div>
+            </div>
+            <div class="col-md-4 sidebar-bg">
+                <div id="sidebar">
+                    
+
+                    
+                    
+                    
+                    <h1>MicroPython and the Internet of Things</h1>
+                    
+                    
+                    <p>If you would you like to support my <a href="https://blog.miguelgrinberg.com/post/micropython-and-the-internet-of-things-part-i-welcome">MicroPython tutorial series</a> on this blog and as a reward have access to the complete tutorial nicely structured as an ebook and 6+ hours of video material, you can now order it from my <a href="https://courses.miguelgrinberg.com/p/micropython">Courses</a> site.</p>
+                    <center><p><a href="https://courses.miguelgrinberg.com/p/micropython"><img src="./Designing a RESTful API using Flask-RESTful_files/micropython-book-small.png"></a></p></center>
+                    
+
+                    
+
+                    <h1>About Miguel</h1>
+                    <img style="float: right; margin: 0px 8px 8px 0px; padding: 4px; border: 1px solid #ccc;" src="./Designing a RESTful API using Flask-RESTful_files/miguel.jpg">
+                    <p>Welcome to my blog!</p>
+                    <p>I'm a software engineer, photographer and filmmaker, currently living in Drogheda, Ireland.</p>
+                    
+                    <p>You can also find me on <a href="https://www.facebook.com/miguelgrinbergblog">Facebook</a>, <a href="https://plus.google.com/u/0/117786742456929977820">Google+</a>, <a href="http://www.linkedin.com/in/miguelgrinberg">LinkedIn</a>, <a href="https://github.com/miguelgrinberg">Github</a> and <a href="https://twitter.com/miguelgrinberg">Twitter</a>.</p>
+                    <p>Thank you for visiting!</p>
+
+                    
+                    <h1>Categories</h1>
+<ul>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/AWS/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="AWS RSS Feed" label="AWS RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/AWS">AWS</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Arduino/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Arduino RSS Feed" label="Arduino RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Arduino">Arduino</a></span> (7)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Authentication/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Authentication RSS Feed" label="Authentication RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Authentication">Authentication</a></span> (6)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Blog/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Blog RSS Feed" label="Blog RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Blog">Blog</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/C++/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="C++ RSS Feed" label="C++ RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/C++">C++</a></span> (5)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Cloud/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Cloud RSS Feed" label="Cloud RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Cloud">Cloud</a></span> (8)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Database/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Database RSS Feed" label="Database RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Database">Database</a></span> (15)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Docker/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Docker RSS Feed" label="Docker RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Docker">Docker</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Filmmaking/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Filmmaking RSS Feed" label="Filmmaking RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Filmmaking">Filmmaking</a></span> (6)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Flask/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Flask RSS Feed" label="Flask RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Flask">Flask</a></span> (91)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Games/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Games RSS Feed" label="Games RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Games">Games</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/HTML5/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="HTML5 RSS Feed" label="HTML5 RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/HTML5">HTML5</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Heroku/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Heroku RSS Feed" label="Heroku RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Heroku">Heroku</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/IoT/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="IoT RSS Feed" label="IoT RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/IoT">IoT</a></span> (8)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/JavaScript/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="JavaScript RSS Feed" label="JavaScript RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/JavaScript">JavaScript</a></span> (14)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/MicroPython/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="MicroPython RSS Feed" label="MicroPython RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/MicroPython">MicroPython</a></span> (8)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Microservices/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Microservices RSS Feed" label="Microservices RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Microservices">Microservices</a></span> (2)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Movie%20Reviews/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Movie Reviews RSS Feed" label="Movie Reviews RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Movie%20Reviews">Movie Reviews</a></span> (5)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/OpenStack/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="OpenStack RSS Feed" label="OpenStack RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/OpenStack">OpenStack</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Personal/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Personal RSS Feed" label="Personal RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Personal">Personal</a></span> (3)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Photography/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Photography RSS Feed" label="Photography RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Photography">Photography</a></span> (7)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Product%20Reviews/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Product Reviews RSS Feed" label="Product Reviews RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Product%20Reviews">Product Reviews</a></span> (2)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Programming/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Programming RSS Feed" label="Programming RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Programming">Programming</a></span> (128)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Project%20Management/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Project Management RSS Feed" label="Project Management RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Project%20Management">Project Management</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Python/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Python RSS Feed" label="Python RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Python">Python</a></span> (122)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/REST/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="REST RSS Feed" label="REST RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/REST">REST</a></span> (6)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Rackspace/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Rackspace RSS Feed" label="Rackspace RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Rackspace">Rackspace</a></span> (1)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Raspberry%20Pi/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Raspberry Pi RSS Feed" label="Raspberry Pi RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Raspberry%20Pi">Raspberry Pi</a></span> (7)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Robotics/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Robotics RSS Feed" label="Robotics RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Robotics">Robotics</a></span> (6)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Security/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Security RSS Feed" label="Security RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Security">Security</a></span> (10)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Video/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Video RSS Feed" label="Video RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Video">Video</a></span> (25)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Webcast/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Webcast RSS Feed" label="Webcast RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Webcast">Webcast</a></span> (3)
+	</li>
+
+	<li>
+		<a href="https://blog.miguelgrinberg.com/category/Windows/feed">
+			<img src="./Designing a RESTful API using Flask-RESTful_files/rss-small.png" title="Windows RSS Feed" label="Windows RSS Feed">
+		</a>
+		<span class="label label-primary"><a href="https://blog.miguelgrinberg.com/category/Windows">Windows</a></span> (1)
+	</li>
+
+</ul>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            
+            <p>© 2012-<script type="text/javascript">document.write(new Date().getFullYear());</script>2020 by Miguel Grinberg. All rights reserved. <a href="mailto:webmaster%20_at_%20miguelgrinberg%20_dot_%20com">Questions?</a></p>
+        </div>
+    </div>
+
+
+    
+    
+    <script src="./Designing a RESTful API using Flask-RESTful_files/jquery.min.js.download"></script>
+    <script src="./Designing a RESTful API using Flask-RESTful_files/bootstrap.min.js.download"></script>
+	<script type="text/javascript" src="./Designing a RESTful API using Flask-RESTful_files/jquery.colorbox-min.js.download"></script>
+    <script type="text/javascript" src="./Designing a RESTful API using Flask-RESTful_files/prettify.js.download"></script>
+    <script src="./Designing a RESTful API using Flask-RESTful_files/moment-with-langs.min.js.download"></script>
+<script>
+function flask_moment_render(elem) {
+    $(elem).text(eval('moment("' + $(elem).data('timestamp') + '").' + $(elem).data('format') + ';'));
+    $(elem).removeClass('flask-moment');
+}
+function flask_moment_render_all() {
+    $('.flask-moment').each(function() {
+        flask_moment_render(this);
+        if ($(this).data('refresh')) {
+            (function(elem, interval) { setInterval(function() { flask_moment_render(elem) }, interval); })(this, $(this).data('refresh'));
+        }
+    })
+}
+$(document).ready(function() {
+    flask_moment_render_all();
+});
+</script>
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-4777284-15']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".gallery").colorbox({rel:".gallery",maxWidth:"95%",maxHeight:"95%",scalePhotos:true});
+            // add prettyprint class to all <pre><code></code></pre> blocks
+            var prettify = false;
+            $("div.post_body pre code").parent().each(function() {
+                $(this).addClass('prettyprint');
+                prettify = true;
+            });
+            prettyPrint();
+        });
+    </script>
+
+
+  
+
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none; max-width: none;"></div></div><iframe scrolling="no" frameborder="0" allowtransparency="true" src="./Designing a RESTful API using Flask-RESTful_files/widget_iframe.96fd96193cc66c3e11d4c5e4c7c7ec97.html" title="Twitter settings iframe" style="display: none;"></iframe><iframe name="oauth2relay295713880" id="oauth2relay295713880" src="./Designing a RESTful API using Flask-RESTful_files/postmessageRelay.html" tabindex="-1" aria-hidden="true" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: none;" title="Twitter analytics iframe" src="./Designing a RESTful API using Flask-RESTful_files/saved_resource(2).html"></iframe><div style="background-color: rgb(255, 255, 255); border: 1px solid rgb(204, 204, 204); box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px; position: absolute; transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s; opacity: 0; visibility: hidden; z-index: 2000000000; left: 0px; top: -10000px;"><div style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0.05;"></div><div class="g-recaptcha-bubble-arrow" style="border: 11px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000;"></div><div class="g-recaptcha-bubble-arrow" style="border: 10px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000;"></div><div style="z-index: 2000000000; position: relative;"><iframe title="recaptcha challenge" src="./Designing a RESTful API using Flask-RESTful_files/bframe.html" name="c-wuftgqcsnxg1" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox" style="width: 100%; height: 100%;"></iframe></div></div></body></html>

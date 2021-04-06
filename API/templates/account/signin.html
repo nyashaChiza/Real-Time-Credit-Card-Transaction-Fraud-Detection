@@ -1,0 +1,53 @@
+{% extends 'layout/layout.html' %}
+{% block body %}
+
+   <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Sign In</h2>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sign In</li>
+                    
+                </ol>
+            
+            </nav>
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+
+<div class="comment-form col-md-10 mx-auto text-center">
+    {% if alert != None: %}
+    <div class="alert alert-danger col-md-7 mx-auto">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Invalid login Details! &nbsp;</strong>
+    </div>
+      </li>
+      {% endif %}
+<h4>Please Enter Your Deatils</h4>
+    <form class="form-contact comment_form " method = 'post' action="{{ url_for('signin_process') }}" id="commentForm">
+        {{ form.csrf_token() }}
+        <div class="row ">
+
+            <div class="col-sm-6 mx-auto text-center">
+                <div class="form-group ">
+                    {{ form.email(size=50, class = "form-control",type = 'email', placeholder = 'Email') }}
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-sm-6 mx-auto text-center">
+                <div class="form-group">
+                    {{ form.password(size=30, class = "form-control",type = 'password', placeholder = 'Password') }}
+                    <small class="float-left"><a href="{{ url_for('signup')}}">create new account?</a></small>
+                </div>
+            </div>
+             </div>
+
+        <div class="form-group">
+            <button type="submit" class="button button-contactForm">Sign In</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

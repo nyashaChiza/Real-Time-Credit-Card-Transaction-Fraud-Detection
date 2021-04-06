@@ -2,39 +2,48 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import secrets
-# from sqlalchemy import Column, Integer, String
-# from app import db
-
-engine = create_engine('sqlite:///database.db', echo=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
-
-# Set your classes here.
+from flask_sqlalchemy import SQLAlchemy
+from app import db
+ 
 
 
-class User(Base):
-    __tablename__ = 'Users'
+class User(db.Model):
+    __tablename__ = 'User'
+    id = db.Column(db.Integer, primary_key = True)
+    password  = db.Column(db.String(50))
+    email  = db.Column(db.String(50))
+    address = db.Column(db.String(50))
+    name = db.Column(db.String(50))
+    surname = db.Column(db.String(50))
+    api_id = db.Column(db.String(16), default =  secrets.token_hex(16))
+    api_token = db.Column(db.String(16), default =  secrets.token_hex(16))
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True)
-    email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(30))
-    api_id = db.Column(db.String(16), default=secrets.token_hex(16))
-    api_tocken = db.Column(db.String(16), default=secrets.token_hex(16))
+class Data(db.Model):
+    __tablename__ = 'Data'
+    id= db.Column(db.Integer, primary_key = True)
+    Client_id = db.Column(db.Integer)
+    feature0 = db.Column(db.Integer)
+    feature1 = db.Column(db.Integer)
+    feature2 = db.Column(db.Integer)
+    feature3 = db.Column(db.Integer)
+    feature4 = db.Column(db.Integer)
+    feature5 = db.Column(db.Integer)
+    age =  db.Column(db.Integer)
+    cv_data = db.Column(db.Integer)
+    cvv = db.Column(db.Integer)
+    asv =  db.Column(db.Integer)
+    amount = db.Column(db.Integer)
+    cardNo = db.Column(db.Integer)
+    label =  db.Column(db.Boolean)
+    location = db.Column(db.String(50))
+    bank = db.Column(db.String(50))
+    card_type = db.Column(db.String(50))
 
-    def __init__(self, name=None, password=None):
-        self.name = name
-        self.password = password
 
-class Clients(Base):
-    __tablename__ = 'Clients'
-
-    id = db.Column(db.Integer, primary_key=True)
-    api_key = db.Column(db.String(24), default=secrets.token_hex())
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    api_key = db.Column(db.String(50), default =  secrets.token_hex(32))
 
 
-# Create tables.
-Base.metadata.create_all(bind=engine)
+
+#-----------------------------------------------------------------------

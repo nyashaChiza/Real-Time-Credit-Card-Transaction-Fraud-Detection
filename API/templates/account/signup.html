@@ -1,0 +1,60 @@
+{% extends 'layout/layout.html' %}
+{% block body %}
+
+   <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Sign Up</h2>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sign Up</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+
+<div class="comment-form col-md-10 mx-auto text-center">
+<h4>Please Enter Your Deatils</h4>
+    <form class="form-contact comment_form" method="post" action="{{ url_for('signup_process') }}" id="commentForm">
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.name(size=30, class = "form-control", placeholder = 'Name') }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.surname(size=30, class = "form-control", placeholder = 'Surname') }}
+                </div>
+            </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.address(size=30, class = "form-control", placeholder = 'Application Address') }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.email(size=50, class = "form-control",type = 'email', placeholder = 'Email') }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.password(size=30, class = "form-control", placeholder = 'Password') }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    {{ form.confirm(size=30, class = "form-control", placeholder = 'Re Enter Password') }}
+                </div>
+            </div>
+                  </div>
+        <div class="form-group">
+            <button type="submit" class="button button-contactForm">Sign Up</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

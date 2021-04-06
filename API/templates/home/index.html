@@ -1,0 +1,76 @@
+
+{% extends 'layout/layout.html' %}
+{% block body %}
+
+ <!--================Home Banner Area =================-->
+    <section class="home_banner_area">
+        <div class="banner_inner d-flex align-items-center">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-6 col-xl-5 offset-xl-7">
+                        <div class="banner_content">
+                            <h3>Build Secure <br> Build Efficient</h3>
+                            <p> Financial solutions to build a secure future.</p>
+                            <a class="banner_btn" href="{{ url_for('signin') }}">Begin<i class="ti-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+ <!--================Service  Area =================-->
+ <section class="service-area area-padding">
+        <div class="container">
+            <div class="row">
+                <!-- Single service -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="single-service">
+                        <div class="service-icon">
+                            <i class="ti-pencil-alt"></i>
+                        </div>
+                        <div class="service-content">
+                            <h5>Unique Design</h5>
+                            <p>Provides a simple elegant design, which was developed with the end user at heart, simpler is better </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single service -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="single-service">
+                        <div class="service-icon">
+                            <i class="ti-image"></i>
+                        </div>
+                        <div class="service-content">
+                            <h5>Business Solution</h5>
+                            <p>Provides  a sense of security to both your bussiness and your clients by securing your cyberspace by detecting fraud. </p>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Single service -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="single-service">
+                        <div class="service-icon">
+                            <i class="ti-headphone-alt"></i>
+                        </div>
+                        <div class="service-content">
+                            <h5>Future Forecasting</h5>
+                            <p>from a complex organisation to a simple E-commerce bussiness front, we provide you with an AI based mothod of predicting and detecting fraudulent transactions in real time. </p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--================Service Area end =================-->
+<br>
+{% endblock %}

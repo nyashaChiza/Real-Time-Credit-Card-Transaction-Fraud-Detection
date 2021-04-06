@@ -1,0 +1,65 @@
+{% extends 'layout/layout2.html' %}
+{% block body %}
+  <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Home</h2>
+
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+<!--================About  Area =================-->
+    <section class="statics-area area-padding">
+        <div class="container">
+            <div class="alert alert-success col-md-7 mx-auto text-center">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong >Welcome {{user.name}} &nbsp;</strong>
+            </div>
+            <div class="row">
+                
+                  </li>
+            
+
+                <div class="col-lg-5">
+                    <div class="image-box">
+                        <img src="{{url_for('static',filename = 'img/banner/about3.png')}}" alt="">
+                    </div>
+                </div>
+
+                <div class="offset-lg-1 col-lg-6">
+                    <div class="area-heading">
+                        <h4>Your API Credentials. </h4>
+                        <h6>use your credentials to access your API token </h6>
+
+                        <div class="alert alert-warning col-md-10 mx-auto text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Client ID: <strong >{{ user.api_id }} </strong> <br />
+                            Client token: <strong >{{ user.api_token }} </strong>
+                        </div>
+
+                    </div>
+                    <div class="single-data">
+                        <i class="ti-check-box"></i>
+                        <p>Obtain your security id and key from this page.</p>
+                    </div>
+                    <div class="single-data">
+                        <i class="ti-check-box"></i>
+                        <p>Use the credentials to obtain the API key.  </p>
+                    </div>
+                    <div class="single-data">
+                        <i class="ti-check-box"></i>
+                        <p>Use the key to validate your API calls.</p>
+                    </div>
+ <div class="button-group-area mt-40">
+
+            <a href="#" class="genric-btn danger radius">Re-Train Model</a>
+
+          </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================About Area End =================-->
+
+
+{% endblock %}
