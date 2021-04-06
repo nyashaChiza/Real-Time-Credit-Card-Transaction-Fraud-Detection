@@ -30,7 +30,7 @@
               
     </div>
          <div class="mx-auto " style="width: 85%; height: 350px;" >
-            <canvas id="canvas"></canvas>
+          <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
         </div>
             </div>
             
@@ -46,7 +46,7 @@
                 
       </div>
            <div class="mx-auto " style="width: 85%; height: 350px;" >
-              <canvas id="canvas2"></canvas>
+            <canvas id="doughnut-chart" width="800" height="450"></canvas>
           </div>
               </div>
               
@@ -78,25 +78,25 @@
 
 
      <script>
-new Chart(document.getElementById("canvas"), {
-  type: 'line',
-  data: {
-    labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
-    datasets: [{
-        data: {{data}} ,
-        label: "Forecast",
-        borderColor: "#3e95cd",
-
-      },
-    ]
-  },
-  options: {
-      maintainAspectRatio: false,
-    title: {
-      display: true,
-      text: 'Electricity Consumption (in KiloWatts)'
+new Chart(document.getElementById("bar-chart-horizontal"), {
+    type: 'horizontalBar',
+    data: {
+      labels: ["Clean",  "Fraudulent"],
+      datasets: [
+        {
+          label: "Credit Card Transactions",
+          backgroundColor: ["#3e95cd", "#c45850"],
+          data: [5267,433]
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Clean Vs Fraudulent Transactions'
+      }
     }
-  }
 });
 	</script>
      <script>
@@ -143,6 +143,27 @@ new Chart(document.getElementById("canvas"), {
             }
           }); 
         </script>
+          <script>
+        new Chart(document.getElementById("doughnut-chart"), {
+            type: 'doughnut',
+            data: {
+              labels: ["Accurate", "Inaccurate"],
+              datasets: [
+                {
+                  label: "Population (millions)",
+                  backgroundColor: ["#3e95cd","#e8c3b9"],
+                  data: [94,6]
+                }
+              ]
+            },
+            options: {
+              title: {
+                display: true,
+                text: 'Model Accuracy'
+              }
+            }
+        });
+      </script>
 </section>
     <!--================Monitor Area End =================-->
 
