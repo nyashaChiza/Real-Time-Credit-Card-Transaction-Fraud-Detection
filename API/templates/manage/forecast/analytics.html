@@ -40,13 +40,14 @@
           <div class="card ">
               <div class="card-header bg-dark text-white ">
                   <h4 class="card-title">Model Accuracy</h4>
-                  <p class="card-category">Random Forest Model</p>
+                  <p class="card-category">Algorithm: Random Forest Model</p>
+                  <p class="card-category">Model Version: 1.0.0</p>
               </div>
               <div class="card-body ">
                 
       </div>
-           <div class="mx-auto " style="width: 85%; height: 350px;" >
-            <canvas id="doughnut-chart" width="800" height="450"></canvas>
+           <div class="mx-auto " style="width: 85%; height: 450px;" >
+            <canvas id="doughnut-chart" width="900" height="650"></canvas>
           </div>
               </div>
               
@@ -63,8 +64,8 @@
                   <div class="card-body ">
                     
           </div>
-               <div class="mx-auto " style="width: 85%; height: 350px;" >
-                  <canvas id="canvas1"></canvas>
+               <div class="mx-auto "  >
+                <canvas id="bar-chart-grouped" width="950" height="450"></canvas>
               </div>
                   </div>
                   
@@ -99,49 +100,31 @@ new Chart(document.getElementById("bar-chart-horizontal"), {
     }
 });
 	</script>
-     <script>
-      new Chart(document.getElementById("canvas1"), {
-        type: 'line',
-        data: {
-          labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
-          datasets: [{
-              data: {{data}} ,
-              label: "Forecast",
-              borderColor: "#3e95cd",
-      
-            },
-          ]
-        },
-        options: {
-            maintainAspectRatio: false,
-          title: {
-            display: true,
-            text: 'Electricity Consumption (in KiloWatts)'
-          }
-        }
-      }); 
-    </script>
+   
          <script>
-          new Chart(document.getElementById("canvas2"), {
-            type: 'line',
-            data: {
-              labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
-              datasets: [{
-                  data: {{data}} ,
-                  label: "Forecast",
-                  borderColor: "#3e95cd",
-          
-                },
-              ]
-            },
-            options: {
-                maintainAspectRatio: false,
-              title: {
-                display: true,
-                text: 'Electricity Consumption (in KiloWatts)'
-              }
-            }
-          }); 
+          new Chart(document.getElementById("bar-chart-grouped"), {
+    type: 'bar',
+    data: {
+      labels: ["Harare", "Bulawayo", "Kwekwe", "Gweru","Mutare", "Kadoma", "Bindura", "Masvingo"],
+      datasets: [
+        {
+          label: "Clean",
+          backgroundColor: "#3e95cd",
+          data: [633,721,783,1078,765,653,985,235]
+        }, {
+          label: "Fraudulent",
+          backgroundColor: "#8e5ea2",
+          data: [108,147,275,334,89,76,122,65]
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Amount Vs Location'
+      }
+    }
+});
         </script>
           <script>
         new Chart(document.getElementById("doughnut-chart"), {
