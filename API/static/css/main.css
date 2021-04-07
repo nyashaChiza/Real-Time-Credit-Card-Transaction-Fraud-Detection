@@ -153,7 +153,7 @@ iframe {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 33px 30px;
+  padding: 13px 15px;
 }
 
 .wrap-table100 {
@@ -185,7 +185,7 @@ th, td {
 }
 
 .column3 {
-  width: 12%;
+  width: 14%;
 }
 
 .column4 {
@@ -193,15 +193,15 @@ th, td {
 }
 
 .column5 {
-  width: 22%;
+  width: 14%;
 }
 
 .column6 {
-  width: 18%;
+  width: 11%;
 }
 
 .column7 {
-  width: 15%;
+  width: 14%;
 }
 
 .table100-head th {
