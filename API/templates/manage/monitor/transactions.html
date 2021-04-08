@@ -1,0 +1,70 @@
+{% extends 'layout/layout3.html' %}
+{% block body %}
+
+  <!--================Hero Banner Area Start =================-->
+    <section class="hero-banner d-flex align-items-center">
+        <div class="container text-center">
+            <h2>Transactions</h2>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Transactions</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+    <!--================Hero Banner Area End =================-->
+
+    <!--================ Start Monitor Area =================-->
+    <section class=" area-padding flex">
+
+      <div class="limiter">
+        <div class="container-table100">
+          <div class="wrap-table100">
+               
+            <div class="table100 ver3 m-b-110">
+              <div class="table100-head">
+                <table>
+                  <thead>
+                    <tr class="row100 head">
+                      <th class="cell100 column11">&nbsp &nbsp Age</th>
+                      <th class="cell100 column21"> ASV</th>
+                      <th class="cell100 column31">Amount</th>
+                      <th class="cell100 column41">Card </th>
+                      <th class="cell100 column51">Location</th>
+                      <th class="cell100 column61">Type</th>
+                      <th class="cell100 column71">Bank</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+    
+              <div class="table100-body js-pscroll">
+                <table>
+                  <tbody>
+                    {%  for item in data %}
+                    <tr class="row100 body">
+                      <td class="cell100 column1">{{ item.age }}</td>
+                      <td class="cell100 column2">{{ item.asv }}</td>
+                      <td class="cell100 column3">{{ item.amount }}</td>
+                      <td class="cell100 column4">{{ item.cardNo }}</td>
+                      <td class="cell100 column5">{{ item.location }}</td>
+                      <td class="cell100 column6">{{ item.card_type }}</td>
+                      <td class="cell100 column7">{{ item.bank }}</td>
+                    </tr>    
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+    
+            </div>
+        </div>
+      </div>
+    
+
+    </section>
+    <!--================Monitor Area End =================-->
+
+
+{% endblock %}
