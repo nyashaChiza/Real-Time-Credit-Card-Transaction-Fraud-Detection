@@ -27,7 +27,7 @@
                 <table>
                   <thead>
                     <tr class="row100 head">
-                      <th class="cell100 column11">Age</th>
+                      <th class="cell100 column11">&nbsp &nbsp Age</th>
                       <th class="cell100 column21"> ASV</th>
                       <th class="cell100 column31">Amount</th>
                       <th class="cell100 column41">Card </th>
@@ -42,187 +42,17 @@
               <div class="table100-body js-pscroll">
                 <table>
                   <tbody>
-    
+                    {%  for item in data %}
                     <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
+                      <td class="cell100 column1">{{ item.age }}</td>
+                      <td class="cell100 column2">{{ item.asv }}</td>
+                      <td class="cell100 column3">{{ item.amount }}</td>
+                      <td class="cell100 column4">{{ item.cardNo }}</td>
+                      <td class="cell100 column5">{{ item.location }}</td>
+                      <td class="cell100 column6">{{ item.card_type }}</td>
+                      <td class="cell100 column7">{{ item.bank }}</td>
                     </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
-                    <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
-                    </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
-                    <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
-                    </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
-                    <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
-                    </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
-                    <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
-                    </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
-                    <tr class="row100 body">
-                      <td class="cell100 column1">67450</td>
-                      <td class="cell100 column2">2364</td>
-                      <td class="cell100 column3">20432</td>
-                      <td class="cell100 column4">1168</td>
-                      <td class="cell100 column5">Gweru</td>
-                      <td class="cell100 column6">Debit</td>
-                      <td class="cell100 column7">FBC Bank</td>
-                    </tr>    
-                    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">8750</td>
-                      <td class="cell100 column2">4320</td>
-                      <td class="cell100 column3">35000</td>
-                      <td class="cell100 column4">3462</td>
-                      <td class="cell100 column5">Bulawayo</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Steward Bank</td>
-                    </tr>
-    
-                    <tr class="row100 body">
-                      <td class="cell100 column1">15000</td>
-                      <td class="cell100 column2">8963</td>
-                      <td class="cell100 column3">4500</td>
-                      <td class="cell100 column4">2357</td>
-                      <td class="cell100 column5">Kwekwe</td>
-                      <td class="cell100 column6">Credit</td>
-                      <td class="cell100 column7">Agribank</td>
-                    </tr>
-
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>

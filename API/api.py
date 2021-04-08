@@ -42,10 +42,14 @@ def auth2(api_key):
 def auth1( auth_email, auth_pass):
         login_Object =  User.query.filter_by(email = auth_email, password=auth_pass).first()
         if login_Object  == None:
-                alert = "login-failed"
                 form = SignIn() 
-                return [False, login_Object] 
+                return [False, None] 
         else:   
-                return [True,login_Object] 
+                return [True, login_Object] 
+#-----------------------------------------------------------------------
+def load_user_data(user_id):
+    data =  Data.query.filter_by(Client_id= user_id).all()
+    return data
+#-----------------------------------------------------------------------
             
 
