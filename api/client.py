@@ -8,13 +8,13 @@ api_key = 'd7311caa7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa6766d8
 
 data = {
     'api_key': api_key,
-    'age':67860,
-    'asv':77945,
-    'Amount':6330,
-    'cardNo':2278,
+    'age':760,
+    'asv':5925,
+    'Amount':18330,
+    'cardNo':2578,
     'location':'Harare',
     'card_type':'Credit',
-    'bank':'Steward Bank'
+    'bank':'FBC Bank'
 }
 
 data2 = {
