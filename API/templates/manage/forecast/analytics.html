@@ -59,7 +59,7 @@
               <div class="card ">
                   <div class="card-header bg-dark text-white ">
                       <h4 class="card-title">Transaction Distrubution</h4>
-                      <p class="card-category">Amount Vs Location</p>
+                      <p class="card-category">Transactions Vs Location</p>
                   </div>
                   <div class="card-body ">
                     
@@ -87,7 +87,7 @@ new Chart(document.getElementById("bar-chart-horizontal"), {
         {
           label: "Credit Card Transactions",
           backgroundColor: ["#3e95cd", "#c45850"],
-          data: [5267,433]
+          data: {{bar_data}}
         }
       ]
     },
@@ -105,23 +105,23 @@ new Chart(document.getElementById("bar-chart-horizontal"), {
           new Chart(document.getElementById("bar-chart-grouped"), {
     type: 'bar',
     data: {
-      labels: ["Harare", "Bulawayo", "Kwekwe", "Gweru","Mutare", "Kadoma", "Bindura", "Masvingo"],
+      labels:{{grouped_data[1] }},
       datasets: [
         {
           label: "Clean",
           backgroundColor: "#3e95cd",
-          data: [633,721,783,1078,765,653,985,235]
+          data: {{grouped_data[2] }}
         }, {
           label: "Fraudulent",
           backgroundColor: "#8e5ea2",
-          data: [108,147,275,334,89,76,122,65]
+          data: {{grouped_data[1] }}
         }
       ]
     },
     options: {
       title: {
         display: true,
-        text: 'Amount Vs Location'
+        text: 'Transactions Vs Location'
       }
     }
 });
