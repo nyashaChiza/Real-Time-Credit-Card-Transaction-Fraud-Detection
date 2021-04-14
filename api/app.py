@@ -232,8 +232,8 @@ def signin_process():
         authentication = auth1(request.form['email'], request.form['password'])
         if  authentication[0]:
             
-            session['user'] = 1
-            return render_template('manage/home.html', user=authentication[1])
+            session['user'] = authentication[1]
+            return render_template('manage/home.html', user=session['user'])
         else:
             alert = "login-failed"
             form = SignIn() 
