@@ -215,8 +215,9 @@ def signup():
 
 @app.route("/manage")
 def manage():
+    user = session['user_data']
     template = 'manage/home.html'
-    return render_template(template)
+    return render_template(template, user=user)
 
 @app.route("/signup_process", methods=['POST'])
 def signup_process():
@@ -231,9 +232,9 @@ def signin_process():
      if request.method == 'POST':
         authentication = auth1(request.form['email'], request.form['password'])
         if  authentication[0]:
-            
-            session['user'] = authentication[1]
-            return render_template('manage/home.html', user=session['user'])
+            session['user_data'] = [authentication[1].name, authentication[1].api_id, authentication[1].api_token ]
+            #print(session['user'].name)
+            return manage()
         else:
             alert = "login-failed"
             form = SignIn() 
