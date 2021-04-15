@@ -232,7 +232,7 @@ def signin_process():
      if request.method == 'POST':
         authentication = auth1(request.form['email'], request.form['password'])
         if  authentication[0]:
-            session['user_data'] = [authentication[1].name, authentication[1].api_id, authentication[1].api_token ]
+            session['user_data'] = [authentication[1].name, authentication[1].api_id, authentication[1].api_token, authentication[1].id ]
             #print(session['user'].name)
             return manage()
         else:
@@ -247,14 +247,14 @@ def signout():
 
 @app.route("/transactions")
 def transactions():
-    data  = load_user_data(session['user'])
+    data  = load_user_data(session['user_data'][3])
     template = 'manage/monitor/transactions.html'
     return render_template(template, data=data)
 
 @app.route("/analysis")
 def analysis():
-    bar_data = bar_graph_loader(session['user'])
-    grouped_data = grouped_bar_graph_loader(session['user'])
+    bar_data = bar_graph_loader(session['user_data'][3])
+    grouped_data = grouped_bar_graph_loader(session['user_data'][3])
     
     template = 'manage/forecast/analytics.html'
     return render_template(template, bar_data=bar_data, grouped_data = grouped_data)
