@@ -245,6 +245,11 @@ def signout():
     #template = 'account/signup.html'
     return index()
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('errors/404.html'), 404
+
 @app.route("/transactions")
 def transactions():
     data  = load_user_data(session['user_data'][3])
@@ -255,7 +260,7 @@ def transactions():
 def analysis():
     bar_data = bar_graph_loader(session['user_data'][3])
     grouped_data = grouped_bar_graph_loader(session['user_data'][3])
-    
+    print(grouped_data[0])
     template = 'manage/forecast/analytics.html'
     return render_template(template, bar_data=bar_data, grouped_data = grouped_data)
 

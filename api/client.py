@@ -20,13 +20,9 @@ data = {
 data2 = {
    'client_id': '1fddd7bd47a7f9efcd15a602bd6462e1',
     'client_token': '9c10eb2b52ffa06a1d3e3369f833f74f'
- 
-
 }
 
-auth = {
-    'api_key': api_key
-}
-resp = requests.get(link, data)
+
+resp = requests.get(link1, data2)
 print(resp.json())
 

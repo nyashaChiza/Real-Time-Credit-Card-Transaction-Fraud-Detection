@@ -78,10 +78,47 @@
                         <p class="card-category">Statistics</p>
                     </div>
                     <div class="card-body ">
-                      <h3> <span class="badge bg-secondary text-white">Total Transactions</span></h3>
-                      <h3> <span class="badge bg-secondary text-white">Requests/sec &nbsp; &nbsp; &nbsp; &nbsp; </span></h3>
-                      <h3> <span class="badge bg-secondary text-white">Threads Active &nbsp; &nbsp;</span></h3>
-                      <h3> <span class="badge bg-secondary text-white">Average Up Time</span></h3>
+                   
+                      <table class="table">
+                        <thead>
+                          <tr>
+                           
+                            <th scope="col">Metric</th>
+                            <th scope="col">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                      
+                            <td>Total Transactions</td>
+                            <td>345</td>
+                           
+                          </tr>
+                          <tr>
+                           
+                            <td>Requests/sec</td>
+                            <td>0.2</td>
+                     
+                          </tr>
+                          <tr>
+                           
+                            <td>Threads Active</td>
+                            <td>1</td>
+                     
+                          </tr>
+                          <tr>
+                           
+                            <td>Up Time (%)</td>
+                            <td>94</td>
+                     
+                          </tr>
+                          <td></td> <td></td>
+                          <tr>
+                        
+                
+                          </tr>
+                        </tbody>
+                      </table>
             </div>
                  <div class="mx-auto "  >
               
@@ -124,7 +161,7 @@ new Chart(document.getElementById("bar-chart-horizontal"), {
           new Chart(document.getElementById("bar-chart-grouped"), {
     type: 'bar',
     data: {
-      labels:{{grouped_data[1] }},
+      labels:['Marondera', 'Nyanga', 'Bulawayo', 'Harare'],
       datasets: [
         {
           label: "Clean",
