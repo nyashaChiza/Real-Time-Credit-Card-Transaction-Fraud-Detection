@@ -77,3 +77,7 @@ def grouped_bar_graph_loader(user_id):
         clean_t.append(len(clean))
     return [cities, fraud_t, clean_t]
 #-----------------------------------------------------------------------
+def data_stats(user_id):
+    data = Data.query.filter_by(Client_id= user_id ).all()
+    return len(data)
+#-----------------------------------------------------------------------

@@ -260,9 +260,9 @@ def transactions():
 def analysis():
     bar_data = bar_graph_loader(session['user_data'][3])
     grouped_data = grouped_bar_graph_loader(session['user_data'][3])
-    print(grouped_data[0])
+    stats = data_stats(session['user_data'][3])
     template = 'manage/forecast/analytics.html'
-    return render_template(template, bar_data=bar_data, grouped_data = grouped_data)
+    return render_template(template, bar_data=bar_data, grouped_data = grouped_data, stats=stats)
 
 if __name__ == '__main__':
     app.run(debug=True)
