@@ -8,14 +8,23 @@ api_key = 'd7311caa7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa6766d8
 
 data = {
     'api_key': api_key,
-    'age':760,
-    'asv':5925,
-    'Amount':18330,
-    'cardNo':2578,
-    'location':'Harare',
+    'age':1305,
+    'asv':8475,
+    'Amount':1000,
+    'cardNo':1272,
+    'location':'Kadoma',
     'card_type':'Credit',
-    'bank':'FBC Bank'
+    'bank':'Standard Bank'
 }
+#FBC Bank              9237
+#Cabs Bank             8162
+#AgriBank              8100
+#NMB Bank              2697
+#Banc ABC              2647
+#Steward Bank          2614
+#CBZ Bank              1391
+#First Capital Bank    1382
+#Standard Bank         1280
 
 data2 = {
    'client_id': '1fddd7bd47a7f9efcd15a602bd6462e1',
@@ -23,6 +32,6 @@ data2 = {
 }
 
 
-resp = requests.get(link1, data2)
+resp = requests.get(link, data)
 print(resp.json())
 
