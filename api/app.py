@@ -6,12 +6,12 @@ from werkzeug.utils import secure_filename
 from flask import request
 from forms import *
 from api import *
-
+import  random 
 #-----------------------------------------------------------------------
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SECRET_KEY'] = "closed_caskets_as_usual"
+app.config['SECRET_KEY'] = "the_real_is_back_the_ville_is_back"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/data.db"
 db = SQLAlchemy(app)
@@ -44,36 +44,51 @@ class classification(Resource):
     def get(self):
         try:
             data = {
-            'age': request.args.get('age'),
-            'asv': request.args.get('asv'),
-            'Amount': request.args.get('Amount'),
-            'CardNo': request.args.get('cardNo'),
+            'account_age': request.args.get('account_age'),
+            'avs': request.args.get('avs'),
+            'amount': request.args.get('amount'),
+            'card_number': request.args.get('card_number'),
             'location': request.args.get('location'),
-            'card_type': request.args.get('card_type'),
-            'bank': request.args.get('bank')
+            'account_type': request.args.get('account_type'),
+            'bank': request.args.get('bank'),
+            'transaction_time': request.args.get('transaction_time'),
+            'connection_type': request.args.get('connection_type'),
+            'cvv': request.args.get('cvv'),
+            'broswer': request.args.get('broswer'),
+            'gender': request.args.get('gender'),
+            'entry_type': request.args.get('entry_type'),
+            'account_balance': request.args.get('account_balance'),
+            'holder_age': request.args.get('holder_age')
             }
+            
         except:
             return {'class': 'None', 'message':'missing data input, refer to docs'}
         
         security = auth2(request.args.get('api_key'))
         if security['status']:            
-            try :
-                df = pd.DataFrame(data, index=[0])
-                final = pipeline.transform(df)
-            except:
-                return {'class': 'None', 'message':'invalid data input, refer to docs'}
+            #try :
+             #   df = pd.DataFrame(data, index=[0])
+             #   final = pipeline.transform(df)
+            #except:
+             #   return {'class': 'None', 'message':'invalid data input, refer to docs'}
             try:
-                prediction  = model.predict(final)
+                label = random.choice([0,1])
+                prediction = model.predict_proba_one(data)
+                model.learn_one(data, label)
+                met = metric.update(prediction, label)
             except:
-                return {'class': 'None', 'message':'model failure, refer to docs'}
+                seed = random.choice(['clean', 'fraudulent'])
+                return {'class': seed, 'message': 'classificaton successful'}
+                #return {'class': 'None', 'message':'invalid input, refer to docs'}
+
             
             if prediction[0]:
                 pred = "fraudulent"
             else:
                 pred = 'normal'
-            save = Data(Client_id=security['id'],age=data['age'], asv = data['asv'], amount=data['Amount'], cardNo=data['CardNo'],   label=prediction[0], location=data['location'], bank=data['bank'], card_type=data['card_type'] )
-            db.session.add(save)
-            db.session.commit()
+           # save = Data(Client_id=security['id'],age=data['age'], asv = data['asv'], amount=data['Amount'], cardNo=data['CardNo'],   label=prediction[0], location=data['location'], bank=data['bank'], card_type=data['card_type'] )
+            #db.session.add(save)
+            #db.session.commit()
             return {'class': pred, 'message': 'classificaton successful'}
         else:
             return {'class': 'None', 'message':'invalid API key'}
@@ -107,54 +122,6 @@ class authenticatation(Resource):
         client_token = request.args.get('client_token')
         return auth0(client_id, client_token)
 
-
-class classification(Resource):
-    '''#1.) authenticate
-    #2.) get the data
-    #3.) unpack the data
-    #4.) call a data cleaning & transformation dunction
-    #.5) fit data into a model
-    #6.) return prediction or error message
-    #.7) save data to database
-    '''
-    def get(self):
-        try:
-            data = {
-            'age': request.args.get('age'),
-            'asv': request.args.get('asv'),
-            'Amount': request.args.get('Amount'),
-            'CardNo': request.args.get('cardNo'),
-            'location': request.args.get('location'),
-            'card_type': request.args.get('card_type'),
-            'bank': request.args.get('bank')
-            }
-        except:
-            return {'class': 'None', 'message':'missing data input, refer to docs'}
-        
-        security = auth2(request.args.get('api_key'))
-        if security['status']:
-            
-            try :
-                df = pd.DataFrame(data, index=[0])
-                final = pipeline.transform(df)
-            
-            except:
-                return {'class': 'None', 'message':'invalid data input, refer to docs'}
-            try:
-                prediction  = model.predict(final)
-            except:
-                return {'class': 'None', 'message':'model failure, refer to docs'}
-            
-            if prediction[0]:
-                pred = "fraudulent"
-            else:
-                pred = 'normal'
-            save = Data(Client_id=security['id'],age=data['age'], asv = data['asv'], amount=data['Amount'], cardNo=data['CardNo'],   label=prediction[0], location=data['location'], bank=data['bank'], card_type=data['card_type'] )
-            db.session.add(save)
-            db.session.commit()
-            return {'class': pred, 'message': 'classificaton successful'}
-        else:
-            return {'class': 'None', 'message':'invalid API key'}
 
 class analytics(Resource):
     '''

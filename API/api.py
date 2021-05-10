@@ -12,8 +12,8 @@ from models import *
 
 
 #-----------------------------------------------------------------------
-model = joblib.load("model/fraud_detection_model.pkl")
-pipeline = joblib.load("pipeline/pipeline.pkl")
+model = joblib.load("model/fraud_detection_classifier.pkl")
+
 #-----------------------------------------------------------------------
 
 def auth0(client_id, client_token):

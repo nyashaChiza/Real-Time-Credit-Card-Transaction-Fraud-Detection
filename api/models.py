@@ -22,14 +22,21 @@ class Data(db.Model):
     __tablename__ = 'Data'
     id= db.Column(db.Integer, primary_key = True)
     Client_id = db.Column(db.Integer)
-    age =  db.Column(db.Integer)
-    asv =  db.Column(db.Integer)
+    account_age =  db.Column(db.Integer)
+    holder_age =  db.Column(db.Integer)
+    transaction_time =  db.Column(db.Integer)
+    avs =  db.Column(db.Integer)
     amount = db.Column(db.Integer)
-    cardNo = db.Column(db.Integer)
+    account_balance = db.Column(db.Integer)
+    card_number = db.Column(db.Integer)
     label =  db.Column(db.Boolean)
     location = db.Column(db.String(50))
     bank = db.Column(db.String(50))
-    card_type = db.Column(db.String(50))
+    broswer = db.Column(db.String(50))
+    cvv = db.Column(db.String(5))
+    entry_type = db.Column(db.String(50))
+    connection_type = db.Column(db.String(50))
+    account_type = db.Column(db.String(50))
 
 
 class Client(db.Model):
