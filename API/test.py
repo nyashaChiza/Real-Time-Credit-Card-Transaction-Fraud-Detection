@@ -1,12 +1,12 @@
-from models import *
+from river import compose
+from river import linear_model
+from river import preprocessing
+import dill
+import requests
 
-def unique(list1):
-    list_set = set(list1)
-    unique_list = (list(list_set))
-    return unique_list
-
-def data_stats(user_id):
-    data = Data.query.filter_by(Client_id= user_id ).all()
-    return len(data)
-    
-print(data_stats(1))
+model = compose.Pipeline(
+    preprocessing.StandardScaler(),
+    linear_model.LinearRegression()
+)
+with open('model.pkl', 'wb') as file:
+    dill.dump(model, file)
