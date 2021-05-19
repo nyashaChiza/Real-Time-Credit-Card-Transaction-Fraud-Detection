@@ -30,6 +30,7 @@ class Data(db.Model):
     account_balance = db.Column(db.Integer)
     card_number = db.Column(db.Integer)
     label =  db.Column(db.Boolean)
+    gender  = db.Column(db.String(20))
     location = db.Column(db.String(50))
     bank = db.Column(db.String(50))
     broswer = db.Column(db.String(50))

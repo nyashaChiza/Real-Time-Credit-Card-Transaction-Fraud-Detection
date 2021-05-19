@@ -27,10 +27,10 @@
                 <table>
                   <thead>
                     <tr class="row100 head">
-                      <th class="cell100 column11">&nbsp &nbsp Age</th>
+                      <th class="cell100 column11">&nbsp &nbsp Acc. Age</th>
                       <th class="cell100 column21"> ASV</th>
                       <th class="cell100 column31">Amount</th>
-                      <th class="cell100 column41">Card </th>
+                      <th class="cell100 column41">Account </th>
                       <th class="cell100 column51">Location</th>
                       <th class="cell100 column61">Type</th>
                       <th class="cell100 column71">Bank</th>
@@ -44,12 +44,12 @@
                   <tbody>
                     {%  for item in data %}
                     <tr class="row100 body">
-                      <td class="cell100 column1">{{ item.age }}</td>
-                      <td class="cell100 column2">{{ item.asv }}</td>
+                      <td class="cell100 column1">{{ item.account_age }}</td>
+                      <td class="cell100 column2">{{ item.avs }}</td>
                       <td class="cell100 column3">{{ item.amount }}</td>
-                      <td class="cell100 column4">{{ item.cardNo }}</td>
+                      <td class="cell100 column4">{{ item.card_number }}</td>
                       <td class="cell100 column5">{{ item.location }}</td>
-                      <td class="cell100 column6">{{ item.card_type }}</td>
+                      <td class="cell100 column6">{{ item.account_type }}</td>
                       <td class="cell100 column7">{{ item.bank }}</td>
                     </tr>    
                     {% endfor %}

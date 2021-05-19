@@ -1,25 +1,26 @@
 import requests
+import random
 
 link = 'http://127.0.0.1:5000/classification/'
 link1 = 'http://127.0.0.1:5000/authenticatation/'
 link2 = 'http://127.0.0.1:5000/analytics/'
 
-api_key = 'd7311caa7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa6766d84a2716f8dc3427e91c34a6e24cc'
+api_key = 'b17ea0c58973657a4928af9cf4eaf0f378e7ebf1441b95b86253829d152e39085e8211d3e3ad7afdb62e6c4ad208da7a'
 w_api_key = 'd7311caga7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa6766d84a2716f8dc3427e91c34a6e24cc'
-
+seed1 = random.choice(['male', 'female'])
 data1 = {
     'api_key':api_key,
-    'account_age':1305,
-    'avs':8475,
-    'amount':1000,
-    'card_number':1272,
-    'location':'Kadoma',
+    'account_age':105,
+    'avs':6425,
+    'amount':4000,
+    'card_number':8771,
+    'location':'Marondera',
     'account_type':'Credit',
-    'bank':'Standard Bank',
-    'connection_type':'http',
-    'cvv':'y',
+    'bank':'FBC Bank',
+    'connection_type':'https',
+    'cvv':'n',
     'broswer':'Mozilla/5.0 ',
-    'gender':'female',
+    'gender':'male',
     'entry_type':'chip',
     'transaction_time':64,
     'account_balance':674,
@@ -63,8 +64,8 @@ data2 = {
     'holder_age':32
 }
 auth = {
-   'client_id': '1fddd7bd47a7f9efcd15a602bd6462e1',
-    'client_token': '9c10eb2b52ffa06a1d3e3369f833f74f'
+   'client_id': 'd2fa7394034b409e97d936dfb3728422',
+    'client_token': '9d261fe86923768a9c9f937a2bc93aff'
 }
 
 #obtaining API KEY
@@ -76,9 +77,9 @@ auth = {
 #print(resp.json())
 
 #classifying transaction 1
-#resp = requests.get(link, data1)
-#print(resp.json())
+resp = requests.get(link, data1)
+print(resp.json())
 
 #classifying transaction 2
-resp = requests.get(link, data2)
-print(resp.json())
+#resp = requests.get(link, data2)
+#print(resp.json())

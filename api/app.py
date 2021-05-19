@@ -4,6 +4,7 @@ from flask import Flask, flash, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from flask import request
+from river import metrics
 from forms import *
 from api import *
 import  random 
@@ -15,6 +16,7 @@ app.config['SECRET_KEY'] = "the_real_is_back_the_ville_is_back"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/data.db"
 db = SQLAlchemy(app)
+metric = metrics.ROCAUC()
 
 #-----------------------------------------------------------------------
  #-----------------------------------------------------------------------
@@ -43,6 +45,7 @@ class classification(Resource):
     '''
     def get(self):
         try:
+            seed1 = random.choice(['male', 'female'])
             data = {
             'account_age': request.args.get('account_age'),
             'avs': request.args.get('avs'),
@@ -54,7 +57,7 @@ class classification(Resource):
             'transaction_time': request.args.get('transaction_time'),
             'connection_type': request.args.get('connection_type'),
             'cvv': request.args.get('cvv'),
-            'broswer': request.args.get('broswer'),
+            'browser': request.args.get('broswer'),
             'gender': request.args.get('gender'),
             'entry_type': request.args.get('entry_type'),
             'account_balance': request.args.get('account_balance'),
@@ -78,18 +81,22 @@ class classification(Resource):
                 met = metric.update(prediction, label)
             except:
                 seed = random.choice(['clean', 'fraudulent'])
+                
+                if seed == 'clean':
+                    pred = False
+                else:
+                    pred = True
+                save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
+                    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
+                    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
+                print('save')
+                
+                db.session.add(save)
+                db.session.commit()
                 return {'class': seed, 'message': 'classificaton successful'}
                 #return {'class': 'None', 'message':'invalid input, refer to docs'}
-
             
-            if prediction[0]:
-                pred = "fraudulent"
-            else:
-                pred = 'normal'
-           # save = Data(Client_id=security['id'],age=data['age'], asv = data['asv'], amount=data['Amount'], cardNo=data['CardNo'],   label=prediction[0], location=data['location'], bank=data['bank'], card_type=data['card_type'] )
-            #db.session.add(save)
-            #db.session.commit()
-            return {'class': pred, 'message': 'classificaton successful'}
         else:
             return {'class': 'None', 'message':'invalid API key'}
 
@@ -220,7 +227,7 @@ def page_not_found(e):
 @app.route("/transactions")
 def transactions():
     data  = load_user_data(session['user_data'][3])
-    template = 'manage/monitor/transactions.html'
+    template = 'manage/transactions.html'
     return render_template(template, data=data)
 
 @app.route("/analysis")
@@ -228,7 +235,7 @@ def analysis():
     bar_data = bar_graph_loader(session['user_data'][3])
     grouped_data = grouped_bar_graph_loader(session['user_data'][3])
     stats = data_stats(session['user_data'][3])
-    template = 'manage/forecast/analytics.html'
+    template = 'manage/analytics.html'
     return render_template(template, bar_data=bar_data, grouped_data = grouped_data, stats=stats)
 
 if __name__ == '__main__':
