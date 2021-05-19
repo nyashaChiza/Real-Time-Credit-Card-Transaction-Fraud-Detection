@@ -20,8 +20,12 @@ To build a fraud detection classifier that, given a new transaction, can tell us
 
 # EXPECTED RESULTS:
 
-1)	A model that can classify transactions as normal or fraudulent in real time
-2)	A model with an accuracy score of at least 80%
-3)	The model is to be deployed using a REST API
+1)	To develop a transaction classification model with at least a 80% accuracy rate
+2) To detect anomalies within transactions in real-time
+3)	To detect anomalies within transactions in real-time
 
 
+# METHODOLOGY:
+In order to get the best performance the model has to be trained in conditions similiar to the production environment,
+so the system will follow the kaffa pattern where the machine learning model learns and predicts from a stream of inputs.
+The data will be handles as a stream using the river streaming fuction and will make use of the adaptive random forest algorithm to incrementally learn from a data. 
