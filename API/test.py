@@ -1,50 +1,17 @@
-from sklearn import svm
-from sklearn import datasets
+import messanger
 
-# Load training data
-iris = datasets.load_iris()
-X, y = iris.data, iris.target
+# Mobile number registered in way2sms website.
+phone = '+263783481766'
 
-# Model Training
-clf = svm.SVC(gamma='scale')
-clf.fit(X, y)
+# Password in way2sms website.
+password = ''
 
-# iris_classifier.py
-import pandas as pd
+# Receiver mobile number.
+receiver = '+14529959578'
 
-from bentoml import env, artifacts, api, BentoService
-from bentoml.adapters import DataframeInput
-from bentoml.frameworks.sklearn import SklearnModelArtifact
+# Text message that you want to send
+message = """Hey Donald Trump,
+Can write a python program which can send free text messages
+"""
 
-@env(infer_pip_packages=True)
-@artifacts([SklearnModelArtifact('model')])
-class IrisClassifier(BentoService):
-    """
-    A minimum prediction service exposing a Scikit-learn model
-    """
-
-    @api(input=DataframeInput(), batch=True)
-    def predict(self, df: pd.DataFrame):
-        """
-        An inference API named `predict` with Dataframe input adapter, which codifies
-        how HTTP requests or CSV files are converted to a pandas Dataframe object as the
-        inference API function input
-        """
-        return self.artifacts.model.predict(df)
-
-# import the IrisClassifier class defined above
-#from iris_classifier import IrisClassifier
-
-# Create a iris classifier service instance
-iris_classifier_service = IrisClassifier()
-
-# Pack the newly trained model artifact
-iris_classifier_service.pack('model', clf)
-
-# Save the prediction service to disk for model serving
-saved_path = iris_classifier_service.save()
-from bentoml.yatai.client import get_yatai_client
-yatai_url = 'https://remote.yatai:50050'
-yatai_client = get_yatai_client(yatai_url)
-
-local_yatai_client = get_yatai_client()
+messanger.send(phone, password, receiver, message)
