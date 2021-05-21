@@ -44,6 +44,17 @@ class Client(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     api_key = db.Column(db.String(50), default =  secrets.token_hex(32))
 
+class Classifier(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    f1_score = db.Column(db.Integer)
+    recall = db.Column(db.Integer)
+    accuracy = db.Column(db.Integer)
+    rocauc = db.Column(db.Integer)
+    precision = db.Column(db.Integer)
+
+
+
 
 
 #-----------------------------------------------------------------------

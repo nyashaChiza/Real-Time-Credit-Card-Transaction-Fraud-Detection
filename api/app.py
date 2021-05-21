@@ -17,7 +17,11 @@ app.config['SECRET_KEY'] = "the_real_is_back_the_ville_is_back"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/data.db"
 db = SQLAlchemy(app)
-metric = metrics.ROCAUC()
+rocauc = metrics.ROCAUC()
+fl_score = metrics.F1()
+precision = metrics.Precision()
+accracy = metrics.Accuracy()
+recall = metrics.Recall()
 
 
 #-----------------------------------------------------------------------
@@ -68,14 +72,10 @@ class classification(Resource):
         
         except:
             return {'class': 'None', 'message':'missing data input, refer to docs'}
-        
+        print(data)
         security = auth2(request.args.get('api_key'))
         if security['status']:            
-            #try :
-             #   df = pd.DataFrame(data, index=[0])
-             #   final = pipeline.transform(df)
-            #except:
-             #   return {'class': 'None', 'message':'invalid data input, refer to docs'}
+           
             try:
                 label = random.choice([0,1])
                 prediction = model.predict_proba_one(data)
@@ -84,14 +84,26 @@ class classification(Resource):
                 else:
                     pred= False
                 model.learn_one(data, label)
-                metric.update(prediction, label)
-                save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
-                    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
-                    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
-                    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
+                met1 = rocauc.update(label, pred)
+                met2 = fl_score.update(label, pred)
+                met3 = recall.update(label, pred)
+                met4 = precision.update(label, pred)
+
+                ro = met1.get()
+                f1 = met2.get()
+                re = met3.get()
+                pr = met4.get()
+
+                metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, fl_score=f1, recall = re, precision = pr)
+                #db.session.add(metric)
+
+               # save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
+                #    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                #    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
+                #    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
                 
-                db.session.add(save)
-                db.session.commit()
+               # db.session.add(save)
+               # db.session.commit()
                 return {'class': pred, 'score': float("{:.3f}".format(prediction[pred])), 'message':'classification successful'}
             except:
                 return {'class': 'None', 'message':'invalid data input, refer to docs'}
@@ -107,9 +119,16 @@ class analytics(Resource):
 #3.) package info and return data or erroe message 
 '''
     def get(self):
-        print('testing')
+        ro = 0.9
+        f1 = 0.9
+        re = 0.9
+        pr = 0.9
+        metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, fl_score=f1, recall = re, precision = pr)
+        db.session.add(metric)
+        db.session.commit()
+        print('data uploaded')
         security = auth2(request.args.get('api_key'))
-        
+
         return security
         
 #class data(Resource):

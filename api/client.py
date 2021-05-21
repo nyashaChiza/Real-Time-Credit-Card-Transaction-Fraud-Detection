@@ -10,21 +10,21 @@ w_api_key = 'd7311caga7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa676
 seed1 = random.choice(['male', 'female'])
 data1 = {
     'api_key':api_key,
-    'account_age':45,
-    'avs':9425,
-    'amount':60,
-    'card_number':8771,
-    'location':'Harare',
+    'account_age':95,
+    'avs':1555,
+    'amount':100,
+    'card_number':8221,
+    'location':'Kwekwe',
     'account_type':'Credit',
-    'bank':'FBC Bank',
-    'connection_type':'http',
-    'cvv':'n',
-    'broswer':'Mozilla/5.0 ',
-    'gender':'female',
+    'bank':'Steward bank',
+    'connection_type':'https',
+    'cvv':'y',
+    'broswer':'Mozilla/5.0',
+    'gender':'male',
     'entry_type':'chip',
-    'transaction_time':124,
-    'account_balance':94,
-    'holder_age':32
+    'transaction_time':294,
+    'account_balance':47,
+    'holder_age':46
 }
 data4 = {
     'api_key':api_key,
@@ -80,7 +80,7 @@ auth = {
 #print(resp.json())
 
 #classifying transaction 1
-#resp = requests.get(link, data3)
+#resp = requests.get(link, data1)
 #print(resp.json())
 
 #classifying transaction 2
