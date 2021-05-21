@@ -26,6 +26,9 @@ data1 = {
     'account_balance':94,
     'holder_age':32
 }
+data4 = {
+    'api_key':api_key,
+}
 
 data3 = {
     'api_key': w_api_key,
@@ -77,9 +80,13 @@ auth = {
 #print(resp.json())
 
 #classifying transaction 1
-resp = requests.get(link, data3)
-print(resp.json())
+#resp = requests.get(link, data3)
+#print(resp.json())
 
 #classifying transaction 2
 #resp = requests.get(link, data2)
 #print(resp.json())
+
+#obtaining analytics 
+resp = requests.get(link2, data4)
+print(resp.json())

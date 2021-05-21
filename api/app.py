@@ -85,18 +85,17 @@ class classification(Resource):
                     pred= False
                 model.learn_one(data, label)
                 metric.update(prediction, label)
+                save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
+                    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
+                    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
+                
+                db.session.add(save)
+                db.session.commit()
                 return {'class': pred, 'score': float("{:.3f}".format(prediction[pred])), 'message':'classification successful'}
             except:
-                #print('classification failed')
                 return {'class': 'None', 'message':'invalid data input, refer to docs'}
-                #save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
-                #    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
-                #    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
-                #    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
                 
-                #db.session.add(save)
-                #db.session.commit()
-                #return {'class': seed, 'message': 'classificaton successful'}
                 
         else:
             return {'class': 'None', 'message':'invalid API key'}
@@ -110,6 +109,7 @@ class analytics(Resource):
     def get(self):
         print('testing')
         security = auth2(request.args.get('api_key'))
+        
         return security
         
 #class data(Resource):
