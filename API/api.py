@@ -12,7 +12,7 @@ from models import *
 
 
 #-----------------------------------------------------------------------
-model = joblib.load("model/fraud_detection_classifier.pkl")
+model = joblib.load('model/transaction_classifier.pkl')
 
 #-----------------------------------------------------------------------
 

@@ -7,7 +7,8 @@ from flask import request
 from river import metrics
 from forms import *
 from api import *
-import  random 
+import  random
+import joblib 
 #-----------------------------------------------------------------------
 
 app = Flask(__name__)
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/data.db"
 db = SQLAlchemy(app)
 metric = metrics.ROCAUC()
+
 
 #-----------------------------------------------------------------------
  #-----------------------------------------------------------------------
@@ -57,13 +59,13 @@ class classification(Resource):
             'transaction_time': request.args.get('transaction_time'),
             'connection_type': request.args.get('connection_type'),
             'cvv': request.args.get('cvv'),
-            'browser': request.args.get('broswer'),
+            'broswer': request.args.get('broswer'),
             'gender': request.args.get('gender'),
             'entry_type': request.args.get('entry_type'),
             'account_balance': request.args.get('account_balance'),
             'holder_age': request.args.get('holder_age')
             }
-            
+        
         except:
             return {'class': 'None', 'message':'missing data input, refer to docs'}
         
@@ -77,26 +79,25 @@ class classification(Resource):
             try:
                 label = random.choice([0,1])
                 prediction = model.predict_proba_one(data)
-                model.learn_one(data, label)
-                met = metric.update(prediction, label)
-            except:
-                seed = random.choice(['clean', 'fraudulent'])
-                
-                if seed == 'clean':
-                    pred = False
-                else:
+                if prediction[True]> prediction[False]:
                     pred = True
-                save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
-                    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
-                    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
-                    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
-                print('save')
+                else:
+                    pred= False
+                model.learn_one(data, label)
+                metric.update(prediction, label)
+                return {'class': pred, 'score': float("{:.3f}".format(prediction[pred])), 'message':'classification successful'}
+            except:
+                #print('classification failed')
+                return {'class': 'None', 'message':'invalid data input, refer to docs'}
+                #save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
+                #    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                #    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
+                #    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
                 
-                db.session.add(save)
-                db.session.commit()
-                return {'class': seed, 'message': 'classificaton successful'}
-                #return {'class': 'None', 'message':'invalid input, refer to docs'}
-            
+                #db.session.add(save)
+                #db.session.commit()
+                #return {'class': seed, 'message': 'classificaton successful'}
+                
         else:
             return {'class': 'None', 'message':'invalid API key'}
 
