@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+       <!-- Required meta tags -->
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="refresh" content=5>
+       <link rel="icon" href="{{url_for('static',filename = 'img//icon/C.png')}}" type="image/png ">
+
+       <title>Charge</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{url_for('static', filename = 'css/bootstrap.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename = 'css/themify-icons.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/fontawesome/css/all.min.css ')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/owl-carousel/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename = 'vendors/animate-css/animate.css')}}">
+        <!-- main css -->
+        <link rel="stylesheet" href="{{url_for('static', filename = 'css/styles.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename = 'css/responsive.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'vendors/bootstrap/css/bootstrap.min.css')}}" >
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'vendors/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'vendors/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/main.css')}}">
+<!--===============================================================================================-->
+</head>
+<body>
+
+
+  <!--================Hero Banner Area Start =================-->
+  <section class="hero-banner d-flex align-items-center">
+    <div class="container text-center">
+        <h2>Transactions</h2>
+        <nav aria-label="breadcrumb" class="banner-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Live Analytics</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+<br>
+<br>
+<!--================Hero Banner Area End =================-->
+
+    <!--================Header Menu Area =================-->
+    <header class="header_area">
+        <div class="main_menu">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <a class="navbar-brand logo_h" href="{{ url_for('manage')}}"><img width="70" height="35" src="{{url_for('static',filename = 'img/logo/Charge.png')}}" alt=""></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav menu_nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('manage') }}">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions') }}">Transactions</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis') }}">Analytics</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions') }}">Flagged</a></li>
+                             <li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}">Sign Out</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!--================Header Menu Area =================-->
+<div class = 'col-md-5 float-right' style=" overflow-y: scroll; height:700px;">
+    
+    {% for x in data[1] %}
+    
+     {% if  x.label== 1 %}
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+     {% else%}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+     {% endif %}
+     
+         <hr>{'account_age': {{x.account_age}}, 'avs': {{x.avs}}, 'amount': {{x.amount}}, 'card_number': {{x.card_number}}, 'location': {{x.location}}, 'account_type': {{x.account_type}}, 'bank': {{x.bank}}, 'transaction_time': {{x.transaction_time}}, 'connection_type': {{x.connection_type}}, 'cvv': {{x.cvv}}, 'broswer': {{x.broswer}}, 'gender': {{x.gender}}, 'entry_type': {{x.entry_type}}, 'account_balance': {{x.account_balance}}, 'holder_age': {{holder_age}} }<hr>
+         {'class': {{x.label}}, 'score': {{ "%.2f"|format(x.score) }}, 'message': 'classification successful'}<hr>
+         
+         
+       </div>
+    {% endfor %}
+   </div>
+
+   <div class="row align-items-md-stretch">
+    <div class="col-md-6">
+      <div class="h-100 p-5 text-white bg-dark rounded-3">
+        <h2>Change the background</h2>
+        <p>Swap the background-color utility and add a `.text-*` color utility to mix up the jumbotron look. Then, mix and match with additional component themes and more.</p>
+        <button class="btn btn-outline-light" type="button">Example button</button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="h-100 p-5 bg-light border rounded-3">
+        <h2>Add borders</h2>
+        <p>Or, keep it light and add a border for some added definition to the boundaries of your content. Be sure to look under the hood at the source HTML here as we've adjusted the alignment and sizing of both column's content for equal-height.</p>
+        <button class="btn btn-outline-secondary" type="button">Example button</button>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row align-items-md-stretch">
+    <div class="col-md-6">
+      <div class="h-100 p-5 text-white bg-dark rounded-3">
+        <h2>Change the background</h2>
+        <p>Swap the background-color utility and add a `.text-*` color utility to mix up the jumbotron look. Then, mix and match with additional component themes and more.</p>
+        <button class="btn btn-outline-light" type="button">Example button</button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="h-100 p-5 bg-light border rounded-3">
+        <h2>Add borders</h2>
+        <p>Or, keep it light and add a border for some added definition to the boundaries of your content. Be sure to look under the hood at the source HTML here as we've adjusted the alignment and sizing of both column's content for equal-height.</p>
+        <button class="btn btn-outline-secondary" type="button">Example button</button>
+      </div>
+    </div>
+  </div>
+
+
+  </div>
+  <br>
+  <br>
+ 
+  
+    <!-- ================ start footer Area ================= -->
+   
+<!-- ================ End footer Area ================= -->
+
+
+
+
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="{{url_for('static',filename ='js/jquery-2.2.4.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/popper.js')}}"></script>
+<script src="{{url_for('static',filename ='js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static',filename ='vendors/owl-carousel/owl.carousel.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.ajaxchimp.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/waypoints.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/mail-script.js')}}"></script>
+<script src="{{url_for('static',filename ='js/contact.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.form.js')}}"></script>
+<script src="{{url_for('static',filename ='js/jquery.validate.min.js')}}"></script>
+<script src="{{url_for('static',filename ='js/mail-script.js')}}"></script>
+<script src="{{url_for('static',filename ='js/theme.js')}}"></script>
+
+<!--===============================================================================================-->	
+<script src="{{url_for('static',filename ='vendors/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{url_for('static',filename ='vendors/bootstrap/js/popper.js')}}"></script>
+	<script src="{{url_for('static',filename ='vendors/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{url_for('static',filename ='vendors/select2/select2.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{url_for('static',filename ='vendors/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+			
+		
+	</script>
+<!--===============================================================================================-->
+	<script src=" {{url_for('static',filename ='js/script.js')}}"></script>
+</body>
+</html>

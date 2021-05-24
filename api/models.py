@@ -27,6 +27,7 @@ class Data(db.Model):
     transaction_time =  db.Column(db.Integer)
     avs =  db.Column(db.Integer)
     amount = db.Column(db.Integer)
+    score = db.Column(db.Integer)
     account_balance = db.Column(db.Integer)
     card_number = db.Column(db.Integer)
     label =  db.Column(db.Boolean)
@@ -47,7 +48,7 @@ class Client(db.Model):
 class Classifier(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    f1_score = db.Column(db.Integer)
+    f1 = db.Column(db.Integer)
     recall = db.Column(db.Integer)
     accuracy = db.Column(db.Integer)
     rocauc = db.Column(db.Integer)

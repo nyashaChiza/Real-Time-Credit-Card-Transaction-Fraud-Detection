@@ -81,3 +81,8 @@ def data_stats(user_id):
     data = Data.query.filter_by(Client_id= user_id ).all()
     return len(data)
 #-----------------------------------------------------------------------
+def data_analytics():
+    data = Classifier.query.all()
+    data2 = Data.query.order_by(Data.id.desc()).all()
+    return [data,data2]
+#-----------------------------------------------------------------------

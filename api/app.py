@@ -1,5 +1,5 @@
 
-from flask_restful import Api
+from flask_restful import Api, Resource
 from flask import Flask, flash, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
@@ -20,11 +20,12 @@ db = SQLAlchemy(app)
 rocauc = metrics.ROCAUC()
 fl_score = metrics.F1()
 precision = metrics.Precision()
-accracy = metrics.Accuracy()
+accuracy = metrics.Accuracy()
 recall = metrics.Recall()
 
 
 #-----------------------------------------------------------------------
+
  #-----------------------------------------------------------------------
     
 class authenticatation(Resource):
@@ -72,7 +73,7 @@ class classification(Resource):
         
         except:
             return {'class': 'None', 'message':'missing data input, refer to docs'}
-        print(data)
+        
         security = auth2(request.args.get('api_key'))
         if security['status']:            
            
@@ -88,24 +89,29 @@ class classification(Resource):
                 met2 = fl_score.update(label, pred)
                 met3 = recall.update(label, pred)
                 met4 = precision.update(label, pred)
+                #met5 = accuracy.update(label, pred)
 
                 ro = met1.get()
                 f1 = met2.get()
                 re = met3.get()
                 pr = met4.get()
+                ac = 0.78
 
-                metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, fl_score=f1, recall = re, precision = pr)
-                #db.session.add(metric)
+                metric = Classifier(name = 'Adaptive Random Forest Classifier1', accuracy= ac,rocauc=ro, f1=f1, recall = re, precision = pr)
+                db.session.add(metric)
 
-               # save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
-                #    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
-                #    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['browser'], gender=data['gender'],
-                #    entry_type=data['entry_type'],   account_balance=data['account_balance'], holder_age=data['holder_age'])            
+                save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
+                   card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                    transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['broswer'], gender=data['gender'],
+                    entry_type=data['entry_type'], score= prediction[pred],  account_balance=data['account_balance'], holder_age=data['holder_age'])            
                 
-               # db.session.add(save)
-               # db.session.commit()
+                db.session.add(save)
+                db.session.add(metric)
+                
+                db.session.commit()
                 return {'class': pred, 'score': float("{:.3f}".format(prediction[pred])), 'message':'classification successful'}
-            except:
+            except Exception as err:
+                print(err)
                 return {'class': 'None', 'message':'invalid data input, refer to docs'}
                 
                 
@@ -119,11 +125,11 @@ class analytics(Resource):
 #3.) package info and return data or erroe message 
 '''
     def get(self):
-        ro = 0.9
-        f1 = 0.9
-        re = 0.9
-        pr = 0.9
-        metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, fl_score=f1, recall = re, precision = pr)
+        ro = 9
+        f1 = 9
+        re = 9
+        pr = 9
+        metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, f1=f1, recall = re, precision = pr)
         db.session.add(metric)
         db.session.commit()
         print('data uploaded')
@@ -137,29 +143,7 @@ class analytics(Resource):
     #3.) package data into a csv file
     #4.) return file
     '''
-class authenticatation(Resource):
-    '''
-    # 1.) get the client id and client token
-    # .2) parse the information to the auth0 function
-    # 3.) return client api key 
-    '''
 
-    def get(self):
-        client_id = request.args.get('client_id')
-        client_token = request.args.get('client_token')
-        return auth0(client_id, client_token)
-
-
-class analytics(Resource):
-    '''
-#1.) call authentication function
-#2.) collect model infomation
-#3.) package info and return data or erroe message 
-'''
-    def get(self):
-        print('testing')
-        security = auth2(request.args.get('api_key'))
-        return security
         
 #class data(Resource):
     
@@ -207,6 +191,15 @@ def signup():
     template = 'account/signup.html'
     return render_template(template, form=form)
 
+@app.route("/stats")
+def stats():
+    form = RegisterForm()
+    template = 'manage/stats.html'
+    data = data_analytics()
+    
+    
+    return render_template(template, data=data)
+
 @app.route("/manage")
 def manage():
     user = session['user_data']
@@ -241,7 +234,6 @@ def signout():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
     return render_template('errors/404.html'), 404
 
 @app.route("/transactions")

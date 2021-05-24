@@ -5,7 +5,7 @@ link = 'http://127.0.0.1:5000/classification/'
 link1 = 'http://127.0.0.1:5000/authenticatation/'
 link2 = 'http://127.0.0.1:5000/analytics/'
 
-api_key = 'b17ea0c58973657a4928af9cf4eaf0f378e7ebf1441b95b86253829d152e39085e8211d3e3ad7afdb62e6c4ad208da7a'
+api_key = '404209da0f1b6200a24b19782048fd090b08b3fa4e13a4907778fcbec147672913f133d8d6cb910fa77315c416ccc0a3'
 w_api_key = 'd7311caga7e3c8e6db309d9fe617fff192bddc5bd8877686d2cbdbeaf05d77aa6766d84a2716f8dc3427e91c34a6e24cc'
 seed1 = random.choice(['male', 'female'])
 data1 = {
@@ -50,25 +50,25 @@ data3 = {
 }
 data2 = {
     'api_key': api_key,
-    'account_age':305,
-    'avs':475,
-    'amount':15000,
-    'card_number':8472,
-    'location':'Harare',
-    'account_type':'Credit',
-    'bank':'FBC Bank',
+    'account_age':79,
+    'avs':467,
+    'amount':6700,
+    'card_number':3474,
+    'location':'Kadoma',
+    'account_type':'Deedit',
+    'bank':'Banc ABC',
     'connection_type':'https',
     'cvv':'n',
     'broswer':'Mozilla/5.0 ',
     'gender':'male',
-    'entry_type':'chip',
-    'transaction_time':54,
-    'account_balance':2365,
-    'holder_age':32
+    'entry_type':'magnetic strip',
+    'transaction_time':304,
+    'account_balance':4640,
+    'holder_age':21
 }
 auth = {
-   'client_id': 'd2fa7394034b409e97d936dfb3728422',
-    'client_token': '9d261fe86923768a9c9f937a2bc93aff'
+   'client_id': '04e7a844acb1606b5d59aeaf0e5a2259',
+    'client_token': '7aa241b36cb05cf974ae869ca8698cd7'
 }
 
 #obtaining API KEY
@@ -80,13 +80,13 @@ auth = {
 #print(resp.json())
 
 #classifying transaction 1
-#resp = requests.get(link, data1)
-#print(resp.json())
+resp = requests.get(link, data2)
+print(resp.json())
 
 #classifying transaction 2
 #resp = requests.get(link, data2)
 #print(resp.json())
 
 #obtaining analytics 
-resp = requests.get(link2, data4)
-print(resp.json())
+#resp = requests.get(link2, data4)
+#print(resp.json())

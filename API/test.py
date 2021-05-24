@@ -1,17 +1,1 @@
-import messanger
-
-# Mobile number registered in way2sms website.
-phone = '+263783481766'
-
-# Password in way2sms website.
-password = ''
-
-# Receiver mobile number.
-receiver = '+14529959578'
-
-# Text message that you want to send
-message = """Hey Donald Trump,
-Can write a python program which can send free text messages
-"""
-
-messanger.send(phone, password, receiver, message)
+{'account_age': '305', 'avs': '475', 'amount': '15000', 'card_number': '8472', 'location': 'Harare', 'account_type': 'Credit', 'bank': 'FBC Bank', 'transaction_time': '54', 'connection_type': 'https', 'cvv': 'n', 'broswer': 'Mozilla/5.0 ', 'gender': 'male', 'entry_type': 'chip', 'account_balance': '2365', 'holder_age': '32'}
