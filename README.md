@@ -22,10 +22,10 @@ To build a fraud detection classifier that, given a new transaction, can tell us
 
 1)	To develop a transaction classification model with at least a 80% accuracy rate
 2) To detect anomalies within transactions in real-time
-3)	To detect anomalies within transactions in real-time
+3)	To implement incremental learning in order to handle concept drift
 
 
 # METHODOLOGY:
 In order to get the best performance the model has to be trained in conditions similiar to the production environment,
 so the system will follow the kaffa pattern where the machine learning model learns and predicts from a stream of inputs.
-The data will be handles as a stream using the river streaming fuction and will make use of the adaptive random forest algorithm to incrementally learn from a data. 
+The data will be handles as a stream using the [River-ml](https://riverml.xyz/latest/) incremental learning python package and will make use of the adaptive random forest algorithm to incrementally learn from a data. 
