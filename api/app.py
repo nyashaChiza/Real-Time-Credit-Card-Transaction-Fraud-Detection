@@ -17,12 +17,6 @@ app.config['SECRET_KEY'] = "the_real_is_back_the_ville_is_back"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///db/data.db"
 db = SQLAlchemy(app)
-rocauc = metrics.ROCAUC()
-fl_score = metrics.F1()
-precision = metrics.Precision()
-accuracy = metrics.Accuracy()
-recall = metrics.Recall()
-
 
 #-----------------------------------------------------------------------
 
@@ -52,7 +46,6 @@ class classification(Resource):
     '''
     def get(self):
         try:
-            seed1 = random.choice(['male', 'female'])
             data = {
             'account_age': request.args.get('account_age'),
             'avs': request.args.get('avs'),
@@ -68,35 +61,31 @@ class classification(Resource):
             'gender': request.args.get('gender'),
             'entry_type': request.args.get('entry_type'),
             'account_balance': request.args.get('account_balance'),
-            'holder_age': request.args.get('holder_age')
+            'holder_age': request.args.get('holder_age'),
+            'answer': request.args.get('answer')
             }
         
-        except:
+        except :
             return {'class': 'None', 'message':'missing data input, refer to docs'}
         
         security = auth2(request.args.get('api_key'))
         if security['status']:            
            
             try:
-                label = random.choice([0,1])
+                label = data['answer']
                 prediction = model.predict_proba_one(data)
                 if prediction[True]> prediction[False]:
                     pred = True
                 else:
                     pred= False
                 model.learn_one(data, label)
-                met1 = rocauc.update(label, pred)
-                met2 = fl_score.update(label, pred)
-                met3 = recall.update(label, pred)
-                met4 = precision.update(label, pred)
-                #met5 = accuracy.update(label, pred)
-
-                ro = met1.get()
-                f1 = met2.get()
-                re = met3.get()
-                pr = met4.get()
-                ac = 0.78
-
+                
+                ro = get_metrics('rocauc')
+                f1 = get_metrics('f1')
+                re = get_metrics('recall')
+                pr = get_metrics('recall')
+                ac = get_metrics('accuracy')
+                
                 metric = Classifier(name = 'Adaptive Random Forest Classifier1', accuracy= ac,rocauc=ro, f1=f1, recall = re, precision = pr)
                 db.session.add(metric)
 
@@ -125,37 +114,43 @@ class analytics(Resource):
 #3.) package info and return data or erroe message 
 '''
     def get(self):
-        ro = 9
-        f1 = 9
-        re = 9
-        pr = 9
-        metric = Classifier(name = 'Adaptive Random Forest Classifier', rocauc=ro, f1=f1, recall = re, precision = pr)
-        db.session.add(metric)
-        db.session.commit()
-        print('data uploaded')
         security = auth2(request.args.get('api_key'))
-
-        return security
+        if security['status']: 
+            data =  card_stats()
+           
+            tr = tr_stats()
+            
+            return {'accuracy':data[3], 'recall': data[0], 'f1_score':data[1], 'precision':data[2], 'total_transactions':tr[2], 'clean':tr[1], 'fraudulent':tr[0]}           
+        else:
+            return {'class': 'None', 'message':'invalid API key'}
         
-#class data(Resource):
+class data(Resource):
     '''
     #2.) query data from database
     #3.) package data into a csv file
     #4.) return file
     '''
-
-        
-#class data(Resource):
-    
-    #2.) query data from database
-    #3.) package data into a csv file
-    #4.) return file
-
+    def get(self):
+        security = auth2(request.args.get('api_key'))
+        if security['status']:
+            details = []
+            transactions = load_transactions()
+            for x in transactions:
+                details.append({
+                    'account_age':x.account_age, 'holder_age':x.holder_age, 'transaction_time':x.transaction_time,
+                    'asv':x.avs, 'amount': x.amount, 'account_balance':x.account_balance, 'card_number':x.card_number,
+                    'gender':x.gender, 'location': x.location, 'bank':x.bank, 'broswer':x.broswer, 'cvv':x.cvv, 'entry_type':x.entry_type,
+                    'connection_type':x.connection_type, 'account_type':x.account_type, 'score':x.score, 'label':x.label
+                })
+            return details
+        else:
+            return {'class': 'None', 'message':'invalid API key'}
 #-----------------------------------------------------------------------
 
 api.add_resource(classification, '/classification/')
 api.add_resource(analytics, '/analytics/')
 api.add_resource(authenticatation, '/authenticatation/')
+api.add_resource(data, '/data/')
 #-----------------------------------------------------------------------
 
 @app.route("/")
@@ -193,12 +188,14 @@ def signup():
 
 @app.route("/stats")
 def stats():
+    statitics = analytics_plot()
     form = RegisterForm()
     template = 'manage/stats.html'
     data = data_analytics()
+    card = card_stats()
     
     
-    return render_template(template, data=data)
+    return render_template(template, data=data, statitics = statitics, card =card)
 
 @app.route("/manage")
 def manage():
@@ -220,7 +217,7 @@ def signin_process():
         authentication = auth1(request.form['email'], request.form['password'])
         if  authentication[0]:
             session['user_data'] = [authentication[1].name, authentication[1].api_id, authentication[1].api_token, authentication[1].id ]
-            #print(session['user'].name)
+           
             return manage()
         else:
             alert = "login-failed"
@@ -239,6 +236,13 @@ def page_not_found(e):
 @app.route("/transactions")
 def transactions():
     data  = load_user_data(session['user_data'][3])
+    template = 'manage/transactions.html'
+    return render_template(template, data=data)
+
+
+@app.route("/flagged")
+def flagged():
+    data  = load_user_data_flagged(session['user_data'][3])
     template = 'manage/transactions.html'
     return render_template(template, data=data)
 

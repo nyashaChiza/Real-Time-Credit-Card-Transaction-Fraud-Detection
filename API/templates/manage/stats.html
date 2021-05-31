@@ -7,7 +7,7 @@
        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="refresh" content=5>
+        <meta http-equiv="refresh" content=3>
        <link rel="icon" href="{{url_for('static',filename = 'img//icon/C.png')}}" type="image/png ">
 
        <title>Charge</title>
@@ -34,6 +34,8 @@
 <link rel = "stylesheet" href =" {{url_for('static', filename = 'Chartjs/Chart.min.css')}}">	
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/util.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'css/main.css')}}">
+      <!-- Chart js -->
+      <script src='/static/Chartjs/Chart.min.js'></script>
 <!--===============================================================================================-->
 </head>
 <body>
@@ -42,7 +44,7 @@
   <!--================Hero Banner Area Start =================-->
   <section class="hero-banner d-flex align-items-center">
     <div class="container text-center">
-        <h2>Transactions</h2>
+        <h2>Live Analytics</h2>
         <nav aria-label="breadcrumb" class="banner-breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -73,7 +75,7 @@
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('manage') }}">Home</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions') }}">Transactions</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis') }}">Analytics</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('transactions') }}">Flagged</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('flagged') }}">Flagged</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('stats') }}">Live</a></li>
                              <li class="nav-item"><a class="nav-link" href="{{ url_for('signout') }}">Sign Out</a></li>
                         </ul>
@@ -84,43 +86,126 @@
         </div>
     </header>
     <!--================Header Menu Area =================-->
-<div class = 'col-md-5 float-right' style=" overflow-y: scroll; height:700px;">
+    <div class='row mx-auto'>
+    <div class=" col-sm-3 col-lg-3 mb-2">
+      <div class="card text-center">
+        <div class="card-body shadow">
+          <h3 class="card-title text-success">
+            {% if card[2] < 50 %}
+            <b class= 'text-danger'>{{ "%.2f"|format(card[2]) }}%</b>
+           {% elif card[2] < 65 and card[2]  > 50  %}
+           <b class= 'text-warning'>{{ "%.2f"|format(card[2]) }}%</b>
+           {% elif card[2] >= 65 %}
+           <b class= 'text-success'>{{ "%.2f"|format(card[2]) }}%</b>
+           {% endif %}
+          </h3>
+          <hr>
+          <p class="card-text"><span class="text-muted">Precision</span></p>
+        </div>
+      </div>
+    </div>
+    <div class=" col-sm-3 col-lg-3 mb-2">
+      <div class="card text-center">
+        <div class="card-body shadow">
+          <h3 class="card-title">
+            {% if card[3] < 50 %}
+            <b class= 'text-danger'>{{ "%.2f"|format(card[3]) }}%</b>
+           {% elif card[3] < 65 and card[3]  > 50 %}
+           <b class= 'text-warning'>{{ "%.2f"|format(card[3]) }}%</b>
+           {% elif card[3] >= 65 %}
+           <b class= 'text-success'>{{ "%.2f"|format(card[3]) }}%</b>
+           {% endif %}
+          </h3>
+          <hr>
+          <p class="card-text"><span class="text-muted">Accuracy</span></p>
+        </div>
+      </div>
+    </div>
+    <div class=" col-sm-3 col-lg-3 mb-2">
+      <div class="card text-center">
+        <div class="card-body shadow">
+          <h3 class="card-title ">
+            {% if card[0] < 50 %}
+            <b class= 'text-danger'>{{ "%.2f"|format(card[0]) }}%</b>
+           {% elif card[0] < 65 and card[0]  > 50 %}
+           <b class= 'text-warning'>{{ "%.2f"|format(card[0]) }}%</b>
+           {% elif card[0] >= 65 %}
+           <b class= 'text-success'>{{ "%.2f"|format(card[0]) }}%</b>
+           {% endif %}
+          </h3>
+          <hr>
+          <p class="card-text"><span class="text-muted">Recall</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3 col-lg-3 mb-2">
+      <div class="card text-center">
+        <div class="shadow card-body">
+          <h3 class="card-title">
+            {% if card[1] < 50 %}
+            <b class= 'text-danger'>{{ "%.2f"|format(card[1]) }}%</b>
+           {% elif card[1] < 65 and card[1] > 50  %}
+           <b class= 'text-warning'>{{ "%.2f"|format(card[1]) }}%</b>
+           {% elif card[1] >= 65 %}
+           <b class= 'text-success'>{{ "%.2f"|format(card[1]) }}%</b>
+           {% endif %}
+          </h3>
+          <hr>
+          <p class="card-text"><span class="text-muted">F1 Score</span></p>
+        </div>
+      </div>
+    </div>
+    </div>
+    <br>
+    <hr class = 'col-md-10 mx-auto'>
+    <br>
+    <div class = 'col-md-6 float-left'>
+        <span class="mx-auto h1">Metics</span>
+          <div class="row align-items-md-stretch">
+            <div class="col-md-6">
+              <div class="shadow h-100 p-5 text-white bg-light rounded-3">
+                <canvas id="bar-chart" height='250'></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="shadow h-100 p-5 bg-light border rounded-3">
+                <canvas id="bar-charts" height='250'></canvas>
+              </div>
+            </div>
+          </div>
+<br>
+          <div class="row align-items-md-stretch">
+            <div class=" col-md-6">
+              <div class="shadow h-100 p-5 text-white bg-light rounded-3">
+                <canvas id="bar-chartz" height='250'></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="shadow h-100 p-5 bg-light border rounded-3">
+                <canvas id="bar-chartsz" height='250'></canvas>
+              </div>
+            </div>
+          </div>
+
+    </div>
+<div class = 'col-md-5  float-right' style=" overflow-y: scroll; height:700px;">
+    <span class=" h1">Events</span>
     
     {% for x in data[1] %}
     
      {% if  x.label== 1 %}
-     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+     <div class="shadow alert alert-danger alert-dismissible fade show" role="alert">
      {% else%}
-     <div class="alert alert-success alert-dismissible fade show" role="alert">
+     <div class="shadow alert alert-success alert-dismissible fade show" role="alert">
      {% endif %}
      
-         <hr>{'account_age': {{x.account_age}}, 'avs': {{x.avs}}, 'amount': {{x.amount}}, 'card_number': {{x.card_number}}, 'location': {{x.location}}, 'account_type': {{x.account_type}}, 'bank': {{x.bank}}, 'transaction_time': {{x.transaction_time}}, 'connection_type': {{x.connection_type}}, 'cvv': {{x.cvv}}, 'broswer': {{x.broswer}}, 'gender': {{x.gender}}, 'entry_type': {{x.entry_type}}, 'account_balance': {{x.account_balance}}, 'holder_age': {{holder_age}} }<hr>
+         <hr>{'account_age': {{x.account_age}}, 'avs': {{x.avs}}, 'amount': {{x.amount}}, 'card_number': {{x.card_number}}, 'location': {{x.location}}, 'account_type': {{x.account_type}}, 'bank': {{x.bank}}, 'transaction_time': {{x.transaction_time}}, 'connection_type': {{x.connection_type}}, 'cvv': {{x.cvv}}, 'broswer': {{x.broswer}}, 'gender': {{x.gender}}, 'entry_type': {{x.entry_type}}, 'account_balance': {{x.account_balance}}, 'holder_age': {{x.holder_age}} }<hr>
          {'class': {{x.label}}, 'score': {{ "%.2f"|format(x.score) }}, 'message': 'classification successful'}<hr>
          
          
        </div>
     {% endfor %}
    </div>
-
-   <div class="row align-items-md-stretch">
-    <div class="col-md-6">
-      <div class="h-100 p-5 text-white bg-dark rounded-3">
-        <canvas id="line"></canvas>
-      </div>
-    </div>
-    <div class="col-md-6">
-        <canvas id="chart"></canvas>
-    </div>
-  </div>
-  <hr>
-  <div class="row align-items-md-stretch">
-    <div class="col-md-6">
-        <canvas id="lhart"></canvas>
-    </div>
-    <div class="col-md-6">
-        <canvas id="line-chart"></canvas>
-    </div>
-  </div>
 
 
   </div>
@@ -172,42 +257,100 @@
 			
 		
 	</script>
-    <script>
-    new Chart(document.getElementById("line-chart"), {
+   <script> 
+new Chart(document.getElementById("bar-chart"), {
+    type: 'line',
+  data: {
+    labels: {{ statitics['label'] }},
+    datasets: [{ 
+        data: {{ statitics['accuracy'] }},
+        label: "Accuracy",
+        borderColor: "#3e95cd",
+        fill: false,
+        pointRadius:0,
+        borderWidth:1
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Model Accuracy'
+    }
+  }
+});
+</script>
+
+<script> 
+    new Chart(document.getElementById("bar-charts"), {
         type: 'line',
-        data: {
-          labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
-          datasets: [{ 
-              data: [86,114,106,106,107,111,133,221,783,2478],
-              label: "Africa",
-              borderColor: "#3e95cd",
-              fill: false
-            }, { 
-              data: [282,350,411,502,635,809,947,1402,3700,5267],
-              label: "Asia",
-              borderColor: "#8e5ea2",
-              fill: false
-            },{ 
-              data: [40,20,10,16,24,38,74,167,508,784],
-              label: "Latin America",
-              borderColor: "#e8c3b9",
-              fill: false
-            }, { 
-              data: [6,3,2,2,7,26,82,172,312,433],
-              label: "North America",
-              borderColor: "#c45850",
-              fill: false
-            }
-          ]
-        },
-        options: {
-          title: {
-            display: true,
-            text: 'World population per region (in millions)'
-          }
-        }
-      });
+  data: {
+    labels: {{ statitics['label'] }},
+    datasets: [{ 
+        data: {{ statitics['recall'] }},
+        label: "Recall",
+        borderColor: "#3e95cd",
+        fill: false,
+        pointRadius:0,
+        borderWidth:1
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Model Recall'
+    }
+  }
+});
     </script>
+    <script> 
+        new Chart(document.getElementById("bar-chartsz"), {
+            type: 'line',
+  data: {
+    labels: {{ statitics['label'] }},
+    datasets: [{ 
+        data: {{ statitics['f1_score'] }},
+        label: "F1 Score",
+        borderColor: "#3e95cd",
+        fill: false,
+        pointRadius:0,
+        borderWidth:1
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'F1 score'
+    }
+  }
+});
+        </script>
+        <script> 
+            new Chart(document.getElementById("bar-chartz"), {
+                
+  type: 'line',
+  data: {
+    labels: {{ statitics['label'] }},
+    datasets: [{ 
+        data: {{ statitics['precision'] }},
+        label: "Precision",
+        borderColor: "#3e95cd",
+        fill: false,
+        pointRadius:0,
+        borderWidth:1
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Model Precision'
+    }
+  }
+});
+            </script>
 <!--===============================================================================================-->
 <script src='{{url_for("static",filename ="Chartjs/Chart.min.js")}}'></script>
     <script src=" {{url_for('static',filename ='js/script.js')}}"></script>
