@@ -189,7 +189,6 @@ def signup():
 @app.route("/stats")
 def stats():
     statitics = analytics_plot()
-    form = RegisterForm()
     template = 'manage/stats.html'
     data = data_analytics()
     card = card_stats()
