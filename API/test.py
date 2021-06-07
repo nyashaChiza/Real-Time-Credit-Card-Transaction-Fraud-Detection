@@ -24,7 +24,7 @@ model1 = compose.Pipeline(
 link = 'http://127.0.0.1:5000/classification/'
 li= 'hit400Dataset.csv'
 df = pd.read_csv(li)
-df = df[30000:]
+df = df[28000:]
 X= df.drop('label', axis=1)
 y = df['label']
 for xi, yi in stream.iter_pandas(X, y):

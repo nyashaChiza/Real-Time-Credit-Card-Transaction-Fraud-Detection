@@ -90,7 +90,7 @@ class classification(Resource):
                 db.session.add(metric)
 
                 save = Data(Client_id=security['id'], account_age=data['account_age'], avs = data['avs'], amount=data['amount'],
-                   card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
+                    card_number=data['card_number'],   label=pred, location=data['location'], bank=data['bank'], account_type=data['account_type'],
                     transaction_time=data['transaction_time'],   connection_type=data['connection_type'], cvv=data['cvv'], broswer=data['broswer'], gender=data['gender'],
                     entry_type=data['entry_type'], score= prediction[pred],  account_balance=data['account_balance'], holder_age=data['holder_age'])            
                 
