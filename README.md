@@ -21,8 +21,7 @@ To build a fraud detection classifier that, given a new transaction, can tell us
 # EXPECTED RESULTS:
 
 1)	To develop a transaction classification model with at least a 80% accuracy rate
-2) To detect anomalies within transactions in real-time
-3)	To implement incremental learning in order to handle concept drift
+2) To provide a risk score for each transaction
 
 
 # METHODOLOGY:
