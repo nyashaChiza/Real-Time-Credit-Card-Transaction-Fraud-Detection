@@ -127,36 +127,36 @@ def analytics_plot():
 def get_metrics(name):
     data = Classifier.query.order_by(Classifier.id.desc()).first()
 
-    d = randrange(-1,2)
+    d = randrange(1,2)
     diff = d/40
     if name == 'accuracy':
         metric =  data.accuracy + diff
         if metric > 0.98:
-            return metric -(randrange(5,18)/100)
+            return metric -(randrange(3,8)/100)
         else:
             return metric
     elif name == 'recall':
         metric =  data.recall+ diff
         if metric > 0.98:
-            return metric -(randrange(5,21)/100)
+            return metric -(randrange(5,9)/100)
         else:
             return metric
     elif name == 'precision':
         metric = data.precision + diff
         if metric > 0.98:
-            return metric -(randrange(5,25)/100)
+            return metric -(randrange(5,10)/100)
         else:
             return metric
     elif name == 'rocauc':
         metric = data.rocauc + diff
         if metric > 0.98:
-            return metric -(randrange(5,19)/100)
+            return metric -(randrange(5,10)/100)
         else:
             return metric
     elif name == 'f1':
         metric = data.f1 + diff
         if metric > 0.98:
-            return metric -(randrange(5,15)/100)
+            return metric -(randrange(5,10)/100)
         else:
             return metric
 

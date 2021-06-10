@@ -111,7 +111,7 @@ class analytics(Resource):
     '''
 #1.) call authentication function
 #2.) collect model infomation
-#3.) package info and return data or erroe message 
+#3.) package info and return data or error message 
 '''
     def get(self):
         security = auth2(request.args.get('api_key'))
@@ -236,7 +236,7 @@ def page_not_found(e):
 def transactions():
     data  = load_user_data(session['user_data'][3])
     template = 'manage/transactions.html'
-    return render_template(template, data=data)
+    return render_template(template, data=data[:20])
 
 
 @app.route("/flagged")
