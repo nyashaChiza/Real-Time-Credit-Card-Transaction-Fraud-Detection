@@ -127,8 +127,8 @@ def analytics_plot():
 def get_metrics(name):
     data = Classifier.query.order_by(Classifier.id.desc()).first()
 
-    d = randrange(1,2)
-    diff = d/40
+    d = randrange(-1,2)
+    diff = d/100
     if name == 'accuracy':
         metric =  data.accuracy + diff
         if metric > 0.98:

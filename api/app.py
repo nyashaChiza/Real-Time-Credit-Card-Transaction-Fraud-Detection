@@ -98,7 +98,7 @@ class classification(Resource):
                 db.session.add(metric)
                 
                 db.session.commit()
-                return {'class': pred, 'score': float("{:.3f}".format(prediction[pred])), 'message':'classification successful'}
+                return {'class': pred, 'risk score': float("{:.2f}".format(1-prediction[pred])), 'message':'classification successful'}
             except Exception as err:
                 print(err)
                 return {'class': 'None', 'message':'invalid data input, refer to docs'}
@@ -254,4 +254,4 @@ def analysis():
     return render_template(template, bar_data=bar_data, grouped_data = grouped_data, stats=stats)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)

@@ -90,9 +90,9 @@ auth = {
 #print(resp.json())
 
 #obtaining analytics 
-#resp = requests.get(link2, data4)
-#print(resp.json())
+resp = requests.get(link2, data4)
+print(resp.json())
 
 #obtaining transaction data 
-resp = requests.get(link3, data4)
-print(resp.json())
+#resp = requests.get(link3, data4)
+#print(resp.json())
