@@ -88,20 +88,16 @@ This endpoint consumes transaction details, classifies the transaction and retur
 
 		'''
 the expected response:
-<<<<<<< HEAD
-			{'class': ‘clean’, risk score:0.67 'message': 'classification successful'}
-=======
 
 
 	'''	
 		{'class': ‘clean’, risk score:0.67 'message': 'classification successful'}
 	'''
 
->>>>>>> f98c6e121e808f864d4af78f10a69ecddc1f9c1f
 
 
 	
-#Analytics
+# Analytics
 This endpoint requires the API key for authentication as shown by the script below,
 
 		''' 
@@ -116,11 +112,8 @@ This endpoint requires the API key for authentication as shown by the script bel
 
 		'''
 the expected response:
-<<<<<<< HEAD
-=======
 
 		'''
->>>>>>> f98c6e121e808f864d4af78f10a69ecddc1f9c1f
 			{
 		‘f1_score’: 0.87,
 		‘recall’: 0.91,
@@ -128,21 +121,13 @@ the expected response:
 		‘accuracy’: 0.92,
 		‘transactions processed’: 10000,
 		‘Normal transactions’: 9500,
-<<<<<<< HEAD
-‘		Fraudulent transactions’: 500,
-}
-
-#Data
-This endpoint requires the API key for authentication and it returns the clients data in a pandas dataFrame format as shown by the script below,
-=======
 		Fraudulent transactions’: 500,
 				}
 		'''
 		
-#Data
+# Data
 This endpoint requires the API key for authentication and it returns the clients data in a pandas dataFrame format as shown by the script below,
 
->>>>>>> f98c6e121e808f864d4af78f10a69ecddc1f9c1f
 		''' 
 		import requests
 		link = 'http://127.0.0.1:5000/data/'
