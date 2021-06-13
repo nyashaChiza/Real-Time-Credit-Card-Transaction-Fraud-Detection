@@ -88,7 +88,12 @@ This endpoint consumes transaction details, classifies the transaction and retur
 
 		'''
 the expected response:
-			{'class': ‘clean’, risk score:0.67 'message': 'classification successful'}
+
+
+	'''	
+		{'class': ‘clean’, risk score:0.67 'message': 'classification successful'}
+	'''
+
 
 
 	
@@ -107,6 +112,8 @@ This endpoint requires the API key for authentication as shown by the script bel
 
 		'''
 the expected response:
+
+		'''
 			{
 		‘f1_score’: 0.87,
 		‘recall’: 0.91,
@@ -114,9 +121,10 @@ the expected response:
 		‘accuracy’: 0.92,
 		‘transactions processed’: 10000,
 		‘Normal transactions’: 9500,
-‘		Fraudulent transactions’: 500,
+		Fraudulent transactions’: 500,
 }
-
+		'''
+		
 #Data
 This endpoint requires the API key for authentication and it returns the clients data in a pandas dataFrame format as shown by the script below,
 
