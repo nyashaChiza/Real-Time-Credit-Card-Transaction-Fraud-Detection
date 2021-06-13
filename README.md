@@ -35,10 +35,11 @@ The data will be handles as a stream using the [River-ml](https://riverml.xyz/la
 
 # Use:
 The system is based on a REST API with the following endpoints
-	1) "localhost:5000/authentication"
-	2) "localhost:5000/classification"
-	3) "localhost:5000/analytics"
-	4) "localhost:5000/data"
+1) "localhost:5000/authentication"
+2) "localhost:5000/classification"
+3) "localhost:5000/analytics"
+4) "localhost:5000/data"
+
 All these endpoints can be accessed using a get request, and they all require the API key to authenticate calls except for the authentication endpoint
 
 # Authentication
