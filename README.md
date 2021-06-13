@@ -119,6 +119,7 @@ the expected response:
 
 #Data
 This endpoint requires the API key for authentication and it returns the clients data in a pandas dataFrame format as shown by the script below,
+
 		''' 
 		import requests
 		link = 'http://127.0.0.1:5000/data/'
