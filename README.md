@@ -1,143 +1,182 @@
-Detecting Credit Card Fraud using ensemble methods in near real-time
+# **Credit Card Fraud Detection using Ensemble Methods in Zimbabwe**  
 
-# Credit Card Fraud Detection using ensemble methods in Zimbabwe
+## **Problem Statement**  
+Both the card issuer and the merchant are liable in the event of fraud. However, most fraud detection efforts are focused on the card issuer (banks), leaving merchants with limited tools for protection. Many local SMEs still rely on outdated rule-based techniques to detect fraud.  
 
+Previously, these rule-based techniques were sufficient, but with Zimbabwe’s evolving economy, businesses must constantly rewrite complex rules to avoid misclassification of transactions. While larger organizations can develop in-house fraud detection solutions, SMEs lack the resources, leaving them vulnerable. Consequently, many businesses hesitate to adopt online payment technologies due to fraud risks.  
 
-# The Problem:
+## **Objective**  
+To build a fraud detection classifier that, given a new transaction, can determine whether it is fraudulent with a corresponding confidence score.  
 
-Both the card issuer and the merchant are liable in the event of fraud, most of the fraud detection efforts are being directed towards the card issuer (the Bank) and merchants are left with no real tools to protect themselves.  Most local SME’s still use rule-based techniques to detect fraud. This solution was relevant back then when Zimbabwe had a stable economy, now these complex rules have to be constantly be rewritten at every turn to avoid incorrect classification of transactions. Bigger organisations can afford develop in house solutions that are not available to the public leaving SME’s exposed to attackers. As a result of this most businesses in Zimbabwe hesitate in the adoption of technology in their business processes because of fear of the risks associated with transacting online. 
+### **Classification Labels:**  
+- **"0"** = Transaction is NOT fraudulent  
+- **"1"** = Transaction IS fraudulent  
 
+## **Expected Results**  
+1) Develop a transaction classification model with at least **80% accuracy**.  
+2) Provide a **risk score** for each transaction.  
 
+## **Methodology**  
+To achieve optimal performance, the model is trained in conditions similar to production using a **stream-based approach**.  
 
-# THE OBJECTIVE: 
+The system follows the **Kafka pattern**, where the machine learning model continuously learns and predicts from incoming transaction streams. This is achieved using [River-ml](https://riverml.xyz/latest/), an incremental learning Python package, which applies the **Adaptive Random Forest algorithm** to update the model in real time.  
 
-To build a fraud detection classifier that, given a new transaction, can tell us if it is fraudulent or not with a correspondent confidence level. # Which are our classes? : 
+---
 
-1) “0” label = transaction is NOT fraudulent
-2) “1” label (transaction IS fraudulent)
+## **Installation Instructions**  
+Follow these steps to set up and run the Flask API:  
 
-# EXPECTED RESULTS:
+### **1. Set Up a Virtual Environment**  
+```bash
+python -m venv venv
+source venv/bin/activate  # On macOS/Linux
+venv\Scripts\activate  # On Windows
+```
 
-1)	To develop a transaction classification model with at least a 80% accuracy rate
-2) To provide a risk score for each transaction
+### **2. Install Dependencies**  
+```bash
+pip install -r requirements.txt
+```
 
+### **3. Start the Flask API**  
+Navigate to the API folder and run:  
+```bash
+python app.py
+```
 
-# METHODOLOGY:
-In order to get the best performance the model has to be trained in conditions similiar to the production environment,
-so the system will follow the kaffa pattern where the machine learning model learns and predicts from a stream of inputs.
-The data will be handles as a stream using the [River-ml](https://riverml.xyz/latest/) incremental learning python package and will make use of the adaptive random forest algorithm to incrementally learn from a data. 
+### **4. Access the API**  
+Open your browser and go to:  
+```
+http://localhost:5000
+```
 
-# Instalation:
-1) Create a virtual enviroment wit virtualenv evn
-2) pip install -r requirements.txt
-3.) navigation to the API folder and run "py app.py"
-4.) go to "localhost:5000" on your browser
+---
 
-# Use:
-The system is based on a REST API with the following endpoints
-	1.) "localhost:5000/authentication"
-	2.) "localhost:5000/classification"
-	3.) "localhost:5000/analytics"
-	4.) "localhost:5000/data"
-All these endpoints can be accessed using a get request, and they all require the API key to authenticate calls except for the authentication endpoint
+## **API Endpoints**  
 
-# Authentication
-The system makes use of a token based authentication mechanism. When a user create an account and login, they are assigned a client id and token in the web application.
-They use these credentials to obtain the API KEY. Below is an example of the script
+### **1. Authentication**  
+- Endpoint: `POST /authentication`  
+- Description: Generates an API key for authenticated users.  
+- Request Example:  
+```python
+import requests
 
-		''' 
-		import requests
-		link = 'http://127.0.0.1:5000/authenticatation/'
-		auth = {
-   			'client_id': '04e7a844acb1606b5d59aeaf0e5a2259',
-    			'client_token': '7aa241b36cb05cf974ae869ca8698cd7'
-			}
-		resp = requests.get(link, auth)
-		print(resp.json())
-
-		'''
-The sample script above with print out the API key
-
-# Classification
-This endpoint consumes transaction details, classifies the transaction and returns a classification report as shown in the script below
-
-		''' 
-		import requests
-		link = 'http://127.0.0.1:5000/classification/'
-		data = {
-    			'api_key': 404209da0f1b6200a24b19782048fdb08b3fa4e13907778fcbec147672913gut3d8d6cb910fa77315c416ccc0a3,
-    			'account_age':305,
-    			'avs':475,
-    			'amount':15000,
-    			'card_number':8472,
-    			'location':'Harare',
-    			'account_type':'Credit',
-    			'bank':'FBC Bank',
-    			'connection_type':'https',
-    			'cvv':'n',
-    			'broswer':'Mozilla/5.0 ',
-    			'gender':'male',
-    			'entry_type':'chip',
-    			'transaction_time':54,
-    			'account_balance':2365,
-    			'holder_age':32
-			}
-
-		resp = requests.get(link, data)
-		print(resp.json())
-
-		'''
-the expected response:
-
-
-	'''	
-		{'class': ‘clean’, risk score:0.67 'message': 'classification successful'}
-	'''
-
-
-
-	
-#Analytics
-This endpoint requires the API key for authentication as shown by the script below,
-
-		''' 
-		import requests
-		link = 'http://127.0.0.1:5000/analytics/'
-		data = {
-    			'api_key':404209da0f1b6200a24b19782048fdb08b3fa4e13907778fcbec147672913gut3d8d6cb910fa77315c416ccc0a3,
-			}
-
-		resp = requests.get(link, data)
-		print(resp.json())
-
-		'''
-the expected response:
-
-		'''
-			{
-		‘f1_score’: 0.87,
-		‘recall’: 0.91,
-		‘precision’: 0.86,
-		‘accuracy’: 0.92,
-		‘transactions processed’: 10000,
-		‘Normal transactions’: 9500,
-‘		Fraudulent transactions’: 500,
+url = 'http://127.0.0.1:5000/authentication/'
+auth = {
+    'client_id': '04e7a844acb1606b5d59aeaf0e5a2259',
+    'client_token': '7aa241b36cb05cf974ae869ca8698cd7'
 }
 
-		
-#Data
+response = requests.get(url, auth)
+print(response.json())
+```
+- **Response:**  
+```json
+{
+    "api_key": "404209da0f1b6200a24b19782048fdb08b3fa4e13907778fcbec147672913..."
+}
+```
 
-This endpoint requires the API key for authentication and it returns the clients data in a pandas dataFrame format as shown by the script below,
+---
 
->>>>>>> f98c6e121e808f864d4af78f10a69ecddc1f9c1f
-		''' 
-		import requests
-		link = 'http://127.0.0.1:5000/data/'
-		data = {
-    			'api_key':404209da0f1b6200a24b19782048fdb08b3fa4e13907778fcbec147672913gut3d8d6cb910fa77315c416ccc0a3,
-			}
+### **2. Transaction Classification**  
+- Endpoint: `POST /classification`  
+- Description: Accepts transaction details and classifies them as fraudulent or legitimate.  
+- Request Example:  
+```python
+import requests
 
-		resp = requests.get(link, data)
-		print(resp.json())
+url = 'http://127.0.0.1:5000/classification/'
+data = {
+    'api_key': 'your_api_key_here',
+    'account_age': 305,
+    'avs': 475,
+    'amount': 15000,
+    'card_number': 8472,
+    'location': 'Harare',
+    'account_type': 'Credit',
+    'bank': 'FBC Bank',
+    'connection_type': 'https',
+    'cvv': 'n',
+    'browser': 'Mozilla/5.0',
+    'gender': 'male',
+    'entry_type': 'chip',
+    'transaction_time': 54,
+    'account_balance': 2365,
+    'holder_age': 32
+}
 
-		'''
+response = requests.get(url, data)
+print(response.json())
+```
+- **Response:**  
+```json
+{
+    "class": "clean",
+    "risk_score": 0.67,
+    "message": "classification successful"
+}
+```
+
+---
+
+### **3. Analytics**  
+- Endpoint: `GET /analytics`  
+- Description: Provides performance metrics of the fraud detection model.  
+- Request Example:  
+```python
+import requests
+
+url = 'http://127.0.0.1:5000/analytics/'
+data = {'api_key': 'your_api_key_here'}
+
+response = requests.get(url, data)
+print(response.json())
+```
+- **Response:**  
+```json
+{
+    "f1_score": 0.87,
+    "recall": 0.91,
+    "precision": 0.86,
+    "accuracy": 0.92,
+    "transactions_processed": 10000,
+    "normal_transactions": 9500,
+    "fraudulent_transactions": 500
+}
+```
+
+---
+
+### **4. Data Retrieval**  
+- Endpoint: `GET /data`  
+- Description: Retrieves the client’s transaction data in **Pandas DataFrame** format.  
+- Request Example:  
+```python
+import requests
+
+url = 'http://127.0.0.1:5000/data/'
+data = {'api_key': 'your_api_key_here'}
+
+response = requests.get(url, data)
+print(response.json())
+```
+
+---
+
+## **Conclusion**  
+This project provides a **near real-time fraud detection system** that is:  
+✅ Scalable with **incremental learning**  
+✅ Easy to integrate using **REST APIs**  
+✅ Secure with **token-based authentication**  
+✅ Accessible to **SMEs and businesses** without expensive in-house solutions  
+
+By implementing this system, **businesses in Zimbabwe** can confidently **adopt digital transactions**, knowing that they have an **intelligent fraud detection system** in place.  
+
+---
+
+### **Contributors**  
+- **Nyasha Chizampeni** (Developer)  
+
+For any inquiries, please reach out via email or GitHub.  
+
